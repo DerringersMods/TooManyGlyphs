@@ -1,0 +1,20 @@
+{
+  "name": "Lay on Hands",
+  "icon": "ars_nouveau:glyph_lay_on_hands",
+  "category": "spells_1",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "text",
+      "text": "ars_nouveau.glyph_desc.lay_on_hands"
+    },
+    {
+      "type": "glyph_recipe",
+      "recipe": "ars_nouveau:glyph_lay_on_hands",
+      "tier": "ONE",
+      "mana_cost": "Low",
+      "clay_type": "ars_nouveau:magic_clay",
+      "reagent": "ars_nouveau:glyph_touch"
+    }
+  ]
+}

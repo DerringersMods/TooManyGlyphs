@@ -1,4 +1,4 @@
-package com.example.examplemod;
+package io.github.derringersmods.toomanyglyphs.init;
 
 import net.minecraft.block.Block;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -14,18 +14,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(ExampleMod.MODID)
-public class ExampleMod
+@Mod(TooManyGlyphsMod.MODID)
+public class TooManyGlyphsMod
 {
     // Directly reference a log4j logger.
-    public static ForgeConfigSpec SERVER_CONFIG;
-    public static final String MODID = "examplemod";
-
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ExampleMod() {
+    public static final String MODID = "toomanyglyphs";
+    public static ForgeConfigSpec SERVER_CONFIG;
+
+
+    public TooManyGlyphsMod() {
         ArsNouveauRegistry.registerGlyphs();
-        ExampleConfig.registerGlyphConfigs();
+        TooManyGlyphsConfig.registerGlyphConfigs();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
         MinecraftForge.EVENT_BUS.register(this);
@@ -42,7 +43,7 @@ public class ExampleMod
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
         // do something when the server starts
-        LOGGER.info("HELLO from server starting");
+        //LOGGER.info("HELLO from server starting");
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD

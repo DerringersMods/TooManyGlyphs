@@ -1,0 +1,18 @@
+{
+	"ars_nouveau.glyph_name.filter_block": "Filter: Block",
+	"ars_nouveau.glyph_desc.filter_block": "Stops the spell from resolving if it targets an entity.",
+	"item.ars_nouveau.glyph_filter_block": "Glyph of Filtering: Block",
+
+	"ars_nouveau.glyph_name.filter_entity": "Filter: Entity",
+	"ars_nouveau.glyph_desc.filter_entity": "Stops the spell from resolving if it targets a block.",
+	"item.ars_nouveau.glyph_filter_entity": "Glyph of Filtering: Entity",
+
+	"ars_nouveau.glyph_name.lay_on_hands": "Lay on Hands",
+	"ars_nouveau.glyph_desc.lay_on_hands": "Embrace your inner paladin! A context-sensitive blend of Touch and Self. Targets non-monster living entities by touch, or casts on self if unable to do so.",
+	"item.ars_nouveau.glyph_lay_on_hands": "Glyph of Lay on Hands",
+
+	"ars_nouveau.glyph_name.reverse_direction": "Reverse Direction",
+	"ars_nouveau.glyph_desc.reverse_direction": "Reverses the direction of a block-targeted spell across the face struck.",
+	"item.ars_nouveau.glyph_reverse_direction": "Glyph of Reverse Direction"
+
+}
