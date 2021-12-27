@@ -13,11 +13,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class EffectFilterEntity extends AbstractEffectFilter {
+public class EffectFilterLiving extends AbstractEffectFilter {
 
-    public static final EffectFilterEntity INSTANCE = new EffectFilterEntity("filter_entity", "Filter: Entity");
+    public static final EffectFilterLiving INSTANCE = new EffectFilterLiving("filter_living", "Filter: Living");
 
-    public EffectFilterEntity(String tag, String description) {
+    public EffectFilterLiving(String tag, String description) {
         super(tag, description);
     }
 
@@ -28,6 +28,8 @@ public class EffectFilterEntity extends AbstractEffectFilter {
 
     @Override
     public boolean matches(EntityRayTraceResult target) {
-        return true;
+        if (!(target.getEntity() instanceof LivingEntity)) return false;
+        LivingEntity e = (LivingEntity) target.getEntity();
+        return e.isAlive();
     }
 }

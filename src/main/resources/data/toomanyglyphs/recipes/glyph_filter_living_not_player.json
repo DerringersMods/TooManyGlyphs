@@ -1,0 +1,6 @@
+{
+  "type": "ars_nouveau:glyph_recipe",
+  "tier": "ONE",
+  "input": "minecraft:blue_orchid",
+  "output": "ars_nouveau:glyph_filter_living_not_player"
+}

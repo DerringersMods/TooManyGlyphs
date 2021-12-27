@@ -29,7 +29,7 @@ public class EffectReverseDirection extends AbstractEffect {
         spellContext.setCanceled(true);
         if (spellContext.getCurrentIndex() >= spellContext.getSpell().recipe.size())
             return;
-        Spell continuation = new Spell(new ArrayList<>(spellContext.getSpell().recipe.subList(spellContext.getCurrentIndex(), spellContext.getSpell().recipe.size())));
+        Spell continuation = new Spell(new ArrayList<>(spellContext.getSpell().recipe.subList(spellContext.getCurrentIndex(), spellContext.getSpell().getSpellSize())));
         SpellContext newContext = new SpellContext(continuation, shooter).withColors(spellContext.colors);
         SpellResolver.resolveEffects(world, shooter, reversedRayTraceResult, continuation, newContext);
     }

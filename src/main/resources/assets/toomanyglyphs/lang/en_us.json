@@ -1,14 +1,34 @@
 {
 	"ars_nouveau.glyph_name.filter_block": "Filter: Block",
-	"ars_nouveau.glyph_desc.filter_block": "Stops the spell from resolving if it targets an entity.",
+	"ars_nouveau.glyph_desc.filter_block": "Stops the spell from resolving unless it targets a block.",
 	"item.ars_nouveau.glyph_filter_block": "Glyph of Filtering: Block",
 
 	"ars_nouveau.glyph_name.filter_entity": "Filter: Entity",
-	"ars_nouveau.glyph_desc.filter_entity": "Stops the spell from resolving if it targets a block.",
+	"ars_nouveau.glyph_desc.filter_entity": "Stops the spell from resolving unless it targets an entity.",
 	"item.ars_nouveau.glyph_filter_entity": "Glyph of Filtering: Entity",
 
+	"ars_nouveau.glyph_name.filter_living": "Filter: Living",
+	"ars_nouveau.glyph_desc.filter_living": "Stops the spell from resolving unless it targets a living entity.",
+	"item.ars_nouveau.glyph_filter_living": "Glyph of Filtering: Living",
+
+	"ars_nouveau.glyph_name.filter_living_not_player": "Filter: Not Player",
+	"ars_nouveau.glyph_desc.filter_living_not_player": "Stops the spell from resolving unless it targets a living entity other than a player.",
+	"item.ars_nouveau.glyph_filter_living_not_player": "Glyph of Filtering: Living, Not Player",
+
+	"ars_nouveau.glyph_name.filter_living_not_monster": "Filter: Not Monster",
+	"ars_nouveau.glyph_desc.filter_living_not_monster": "Stops the spell from resolving unless it targets a living entity other than a monster.",
+	"item.ars_nouveau.glyph_filter_living_not_monster": "Glyph of Filtering: Living, Not Monster",
+
+	"ars_nouveau.glyph_name.filter_player": "Filter: Player",
+	"ars_nouveau.glyph_desc.filter_player": "Stops the spell from resolving unless it targets a living player.",
+	"item.ars_nouveau.glyph_filter_player": "Glyph of Filtering: Player",
+
+	"ars_nouveau.glyph_name.filter_monster": "Filter: Monster",
+	"ars_nouveau.glyph_desc.filter_monster": "Stops the spell from resolving unless it targets a living monster.",
+	"item.ars_nouveau.glyph_filter_monster": "Glyph of Filtering: Monster",
+
 	"ars_nouveau.glyph_name.lay_on_hands": "Lay on Hands",
-	"ars_nouveau.glyph_desc.lay_on_hands": "Embrace your inner paladin! A context-sensitive blend of Touch and Self. Targets non-monster living entities by touch, or casts on self if unable to do so.",
+	"ars_nouveau.glyph_desc.lay_on_hands": "Embrace your inner paladin! A context-sensitive blend of Touch and Self. Targets Living, Not Monster entities by touch, or self if unable to do so, expending no mana if targeting fails entirely. If followed immediately by a Filter glyph, that Filter applies instead of Living, Not Monster.",
 	"item.ars_nouveau.glyph_lay_on_hands": "Glyph of Lay on Hands",
 
 	"ars_nouveau.glyph_name.reverse_direction": "Reverse Direction",

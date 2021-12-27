@@ -1,11 +1,8 @@
 package io.github.derringersmods.toomanyglyphs.init;
 
-import io.github.derringersmods.toomanyglyphs.common.glyphs.EffectFilterBlock;
-import io.github.derringersmods.toomanyglyphs.common.glyphs.EffectFilterEntity;
+import io.github.derringersmods.toomanyglyphs.common.glyphs.*;
 import com.hollingsworth.arsnouveau.api.ArsNouveauAPI;
 import com.hollingsworth.arsnouveau.api.spell.AbstractSpellPart;
-import io.github.derringersmods.toomanyglyphs.common.glyphs.EffectReverseDirection;
-import io.github.derringersmods.toomanyglyphs.common.glyphs.MethodLayOnHands;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +13,11 @@ public class ArsNouveauRegistry {
     public static void registerGlyphs() {
         register(EffectFilterBlock.INSTANCE);
         register(EffectFilterEntity.INSTANCE);
+        register(EffectFilterLiving.INSTANCE);
+        register(EffectFilterLivingNotMonster.INSTANCE);
+        register(EffectFilterLivingNotPlayer.INSTANCE);
+        register(EffectFilterMonster.INSTANCE);
+        register(EffectFilterPlayer.INSTANCE);
         register(MethodLayOnHands.INSTANCE);
         register(EffectReverseDirection.INSTANCE);
     }
