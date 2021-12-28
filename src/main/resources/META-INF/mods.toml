@@ -49,12 +49,12 @@ A mixed bag of add-ons to make Ars Nouveau spells more flexible, more intelligen
 [[dependencies.toomanyglyphs]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.2,)"
+    versionRange="[1.16.4,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.toomanyglyphs]]
     modId="ars_nouveau"
     mandatory=true
-    versionRange="[1.18.10,)"
+    versionRange="[1.24.11,)"
     ordering="AFTER"
     side="BOTH"
