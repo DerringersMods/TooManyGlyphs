@@ -3,6 +3,7 @@ package io.github.derringersmods.toomanyglyphs.common.glyphs;
 import com.hollingsworth.arsnouveau.api.spell.*;
 import com.hollingsworth.arsnouveau.common.spell.method.MethodSelf;
 import com.hollingsworth.arsnouveau.common.spell.method.MethodTouch;
+import io.github.derringersmods.toomanyglyphs.api.FilterUtil;
 import io.github.derringersmods.toomanyglyphs.api.filter.ITargetFilter;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -12,7 +13,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.world.World;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.classic.Abs;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,15 +38,9 @@ public class MethodLayOnHands extends AbstractCastMethod {
         return 10;
     }
 
-    public ITargetFilter getTargetFilter(SpellContext spellContext)
+    public static ITargetFilter getTargetFilter(SpellContext spellContext)
     {
-        int index = spellContext.getCurrentIndex();
-        Spell spell = spellContext.getSpell();
-        for (AbstractSpellPart part : spell.recipe.subList(spellContext.getCurrentIndex(), spellContext.getSpell().getSpellSize())) {
-            if (part instanceof ITargetFilter) return (ITargetFilter) part;
-            if (part instanceof AbstractEffect) break;
-        }
-        return EffectFilterLivingNotMonster.INSTANCE;
+        return FilterUtil.getTargetFilter(spellContext, EffectFilterLivingNotMonster.INSTANCE);
     }
 
     @Override
