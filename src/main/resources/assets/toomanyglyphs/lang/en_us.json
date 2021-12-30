@@ -33,6 +33,10 @@
 
 	"ars_nouveau.glyph_name.reverse_direction": "Reverse Direction",
 	"ars_nouveau.glyph_desc.reverse_direction": "Reverses the direction of a block-targeted spell across the face struck.",
-	"item.ars_nouveau.glyph_reverse_direction": "Glyph of Reverse Direction"
+	"item.ars_nouveau.glyph_reverse_direction": "Glyph of Reverse Direction",
+
+	"ars_nouveau.glyph_name.chaining": "Chaining",
+	"ars_nouveau.glyph_desc.chaining": "Causes a spell to chain through multiple grouped targets, either similar blocks or living entities other than the caster. AOE increases target count. Pierce increases maximum jump distance between targets.",
+	"item.ars_nouveau.glyph_chaining": "Glyph of Chaining"
 
 }
