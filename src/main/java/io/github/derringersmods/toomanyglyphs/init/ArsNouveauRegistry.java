@@ -20,6 +20,7 @@ public class ArsNouveauRegistry {
         register(EffectFilterPlayer.INSTANCE);
         register(MethodLayOnHands.INSTANCE);
         register(EffectReverseDirection.INSTANCE);
+        register(EffectChaining.INSTANCE);
     }
 
     public static void register(AbstractSpellPart spellPart) {
