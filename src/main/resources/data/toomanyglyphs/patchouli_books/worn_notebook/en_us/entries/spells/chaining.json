@@ -1,0 +1,20 @@
+{
+  "name": "Chaining",
+  "icon": "ars_nouveau:glyph_chaining",
+  "category": "spells_2",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "text",
+      "text": "ars_nouveau.glyph_desc.chaining"
+    },
+    {
+      "type": "glyph_recipe",
+      "recipe": "ars_nouveau:glyph_chaining",
+      "tier": "TWO",
+      "mana_cost": "High",
+      "clay_type": "ars_nouveau:marvelous_clay",
+      "reagent": "minecraft:chain"
+    }
+  ]
+}
