@@ -21,6 +21,8 @@ public class ArsNouveauRegistry {
         register(MethodLayOnHands.INSTANCE);
         register(EffectReverseDirection.INSTANCE);
         register(EffectChaining.INSTANCE);
+        register(MethodRay.INSTANCE);
+        register(EffectFilterItem.INSTANCE);
     }
 
     public static void register(AbstractSpellPart spellPart) {

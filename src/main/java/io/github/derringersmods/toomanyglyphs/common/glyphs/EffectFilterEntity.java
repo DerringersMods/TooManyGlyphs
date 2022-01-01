@@ -22,11 +22,6 @@ public class EffectFilterEntity extends AbstractEffectFilter {
     }
 
     @Override
-    public Tier getTier() {
-        return Tier.ONE;
-    }
-
-    @Override
     public boolean matches(EntityRayTraceResult target) {
         return true;
     }

@@ -22,14 +22,8 @@ public class EffectFilterLiving extends AbstractEffectFilter {
     }
 
     @Override
-    public Tier getTier() {
-        return Tier.ONE;
-    }
-
-    @Override
     public boolean matches(EntityRayTraceResult target) {
         if (!(target.getEntity() instanceof LivingEntity)) return false;
-        LivingEntity e = (LivingEntity) target.getEntity();
-        return e.isAlive();
+        return target.getEntity().isAlive();
     }
 }
