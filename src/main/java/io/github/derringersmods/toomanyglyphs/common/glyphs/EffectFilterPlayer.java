@@ -1,5 +1,6 @@
 package io.github.derringersmods.toomanyglyphs.common.glyphs;
 
+import com.hollingsworth.arsnouveau.common.entity.EntityDummy;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -13,6 +14,6 @@ public class EffectFilterPlayer extends EffectFilterLiving {
 
     @Override
     public boolean matches(EntityRayTraceResult target) {
-        return super.matches(target) && target.getEntity() instanceof PlayerEntity;
+        return super.matches(target) && (target.getEntity() instanceof PlayerEntity || target.getEntity() instanceof EntityDummy);
     }
 }
