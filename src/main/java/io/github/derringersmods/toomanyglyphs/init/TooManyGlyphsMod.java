@@ -34,11 +34,12 @@ public class TooManyGlyphsMod
 
     private void setup(final FMLCommonSetupEvent event)
     {
-
+        TooManyGlyphsNetworking.registerNetwork();
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
     }
+
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
@@ -55,5 +56,7 @@ public class TooManyGlyphsMod
             // register a new block here
 
         }
+
+
     }
 }
