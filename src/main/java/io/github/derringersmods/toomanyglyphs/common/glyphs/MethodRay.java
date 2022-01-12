@@ -9,6 +9,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.Vector3d;
@@ -18,6 +19,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class MethodRay extends AbstractCastMethod {
@@ -71,13 +73,21 @@ public class MethodRay extends AbstractCastMethod {
 
         if (blockTarget.getType() == RayTraceResult.Type.BLOCK)
         {
-            resolver.onResolveEffect(world, shooter, blockTarget);
             resolver.expendMana(shooter);
+            resolver.onResolveEffect(world, shooter, blockTarget);
             PacketRayEffect.send(world, spellContext, fromPoint, blockTarget.getLocation());
             return;
         }
 
-        // Fizzle!
+        if (blockTarget.getType() == RayTraceResult.Type.MISS && sensitivity >= 2)
+        {
+            Vector3d approximateNormal = fromPoint.subtract(toPoint).normalize();
+            blockTarget = new BlockRayTraceResult(toPoint, Direction.getNearest(approximateNormal.x, approximateNormal.y, approximateNormal.z), new BlockPos(toPoint), true);
+            resolver.expendMana(shooter);
+            resolver.onResolveEffect(world, shooter, blockTarget);
+            PacketRayEffect.send(world, spellContext, fromPoint, blockTarget.getLocation());
+        }
+
         resolver.expendMana(shooter);
         PacketRayEffect.send(world, spellContext, fromPoint, toPoint);
     }
@@ -141,5 +151,12 @@ public class MethodRay extends AbstractCastMethod {
     @Override
     public Set<AbstractAugment> getCompatibleAugments() {
         return setOf(AugmentAOE.INSTANCE, AugmentSensitive.INSTANCE);
+    }
+
+    @Override
+    protected Map<String, Integer> getDefaultAugmentLimits() {
+        Map<String, Integer> result = super.getDefaultAugmentLimits();
+        result.put(AugmentSensitive.INSTANCE.getTag(), 2);
+        return result;
     }
 }
