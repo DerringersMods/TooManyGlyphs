@@ -22,7 +22,7 @@ import java.util.Set;
 
 public class MethodLayOnHands extends AbstractCastMethod {
 
-    public static final MethodLayOnHands INSTANCE = new MethodLayOnHands("lay_on_hands", "Touch Buff");
+    public static final MethodLayOnHands INSTANCE = new MethodLayOnHands("lay_on_hands", "Lay on Hands");
 
     public MethodLayOnHands(String tag, String description) {
         super(tag, description);

@@ -1,12 +1,9 @@
 package io.github.derringersmods.toomanyglyphs.common.glyphs;
 
 import com.hollingsworth.arsnouveau.api.spell.*;
-import com.hollingsworth.arsnouveau.common.network.Networking;
-import com.hollingsworth.arsnouveau.common.network.PacketANEffect;
 import com.hollingsworth.arsnouveau.common.spell.augment.AugmentAOE;
 import com.hollingsworth.arsnouveau.common.spell.augment.AugmentSensitive;
 import io.github.derringersmods.toomanyglyphs.common.network.PacketRayEffect;
-import io.github.derringersmods.toomanyglyphs.init.TooManyGlyphsNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
@@ -16,9 +13,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -70,7 +65,7 @@ public class MethodRay extends AbstractCastMethod {
             resolver.onResolveEffect(world, shooter, entityTarget);
             resolver.expendMana(shooter);
             Vector3d hitPoint = findNearestPointOnLine(fromPoint, toPoint, entityTarget.getLocation());
-            sendRayFx(world, spellContext, fromPoint, hitPoint);
+            PacketRayEffect.send(world, spellContext, fromPoint, hitPoint);
             return;
         }
 
@@ -78,31 +73,17 @@ public class MethodRay extends AbstractCastMethod {
         {
             resolver.onResolveEffect(world, shooter, blockTarget);
             resolver.expendMana(shooter);
-            sendRayFx(world, spellContext, fromPoint, blockTarget.getLocation());
+            PacketRayEffect.send(world, spellContext, fromPoint, blockTarget.getLocation());
             return;
         }
 
         // Fizzle!
         resolver.expendMana(shooter);
-        sendRayFx(world, spellContext, fromPoint, toPoint);
+        PacketRayEffect.send(world, spellContext, fromPoint, toPoint);
     }
 
-    private void sendRayFx(World world, SpellContext spellContext, Vector3d fromPoint, Vector3d hitPoint) {
-        Vector3d midpoint = fromPoint.add(hitPoint).scale(0.5);
-        double radius = 64.0 + fromPoint.distanceTo(midpoint);
-        double radiusSqr = radius * radius;
-
-        if (world instanceof ServerWorld)
-        {
-            PacketRayEffect fx = new PacketRayEffect(fromPoint, hitPoint, spellContext.colors);
-            ServerWorld serverWorld = (ServerWorld) world;
-            serverWorld.getChunkSource().chunkMap.getPlayers(new ChunkPos(new BlockPos(midpoint)), false)
-                    .filter(p -> p.distanceToSqr(midpoint) <= radiusSqr)
-                    .forEach(p -> TooManyGlyphsNetworking.fxChannel.send(PacketDistributor.PLAYER.with(() -> p), fx));
-        }
-    }
-
-    private static Vector3d findNearestPointOnLine(Vector3d fromPoint, Vector3d toPoint, Vector3d hitPoint)
+    @Nonnull
+    private static Vector3d findNearestPointOnLine(@Nonnull Vector3d fromPoint, @Nonnull Vector3d toPoint, @Nonnull Vector3d hitPoint)
     {
         // algorithm thanks to https://stackoverflow.com/a/9368901
         Vector3d u = toPoint.subtract(fromPoint);
