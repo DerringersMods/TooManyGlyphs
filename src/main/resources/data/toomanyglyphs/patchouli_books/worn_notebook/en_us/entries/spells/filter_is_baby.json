@@ -1,0 +1,20 @@
+{
+  "name": "Filter: Baby",
+  "icon": "ars_nouveau:glyph_filter_is_baby",
+  "category": "spells_2",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "text",
+      "text": "ars_nouveau.glyph_desc.filter_is_baby"
+    },
+    {
+      "type": "glyph_recipe",
+      "recipe": "ars_nouveau:glyph_filter_is_baby",
+      "tier": "ONE",
+      "mana_cost": "Low",
+      "clay_type": "ars_nouveau:marvelous_clay",
+      "reagent": "minecraft:egg"
+    }
+  ]
+}

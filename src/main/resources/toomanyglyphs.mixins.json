@@ -5,7 +5,8 @@
   "refmap": "toomanyglyphs.refmap.json",
   "plugin": "io.github.derringersmods.toomanyglyphs.common.mixin.MixinPlugin",
   "mixins": [
-    "RuneBlockFilterMixin"
+    "RuneBlockFilterMixin",
+    "AugmentCompatibilityValidatorMixin"
   ],
   "injectors": {
     "defaultRequire": 1

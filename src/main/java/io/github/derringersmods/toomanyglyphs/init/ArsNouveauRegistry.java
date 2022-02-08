@@ -23,6 +23,11 @@ public class ArsNouveauRegistry {
         register(EffectChaining.INSTANCE);
         register(MethodRay.INSTANCE);
         register(EffectFilterItem.INSTANCE);
+        register(EffectFilterAnimal.INSTANCE);
+        register(EffectFilterIsBaby.INSTANCE);
+        register(EffectFilterIsMature.INSTANCE);
+        register(AugmentAmplifyTwo.INSTANCE);
+        register(AugmentAmplifyThree.INSTANCE);
     }
 
     public static void register(AbstractSpellPart spellPart) {
