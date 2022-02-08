@@ -12,7 +12,7 @@
       "type": "glyph_recipe",
       "recipe": "ars_nouveau:glyph_chaining",
       "tier": "TWO",
-      "mana_cost": "High",
+      "mana_cost": "Very High",
       "clay_type": "ars_nouveau:marvelous_clay",
       "reagent": "minecraft:chain"
     }

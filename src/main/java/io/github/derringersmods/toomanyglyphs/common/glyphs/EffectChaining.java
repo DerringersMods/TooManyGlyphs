@@ -44,6 +44,7 @@ public class EffectChaining extends AbstractEffect {
 
     @Override
     public void buildConfig(ForgeConfigSpec.Builder builder) {
+        super.buildConfig(builder);
         PER_SPELL_LIMIT = builder.comment("The maximum number of times this glyph may appear in a single spell").defineInRange("per_spell_limit", 1, 1, Integer.MAX_VALUE);
         BASE_MAX_BLOCKS = builder.comment("Base maximum number of blocks struck when targeting blocks").defineInRange("base_max_blocks", 16, 1, Integer.MAX_VALUE);
         BONUS_BLOCKS = builder.comment("Bonus to maximum blocks per augment").defineInRange("bonus_blocks", 16, 1, Integer.MAX_VALUE);
