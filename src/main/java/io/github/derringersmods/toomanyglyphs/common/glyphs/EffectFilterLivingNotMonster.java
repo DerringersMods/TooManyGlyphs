@@ -1,7 +1,7 @@
 package io.github.derringersmods.toomanyglyphs.common.glyphs;
 
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.phys.EntityHitResult;
 
 public class EffectFilterLivingNotMonster extends EffectFilterLiving {
     public static final EffectFilterLivingNotMonster INSTANCE = new EffectFilterLivingNotMonster("filter_living_not_monster", "Filter: Not Monster");
@@ -11,7 +11,7 @@ public class EffectFilterLivingNotMonster extends EffectFilterLiving {
     }
 
     @Override
-    public boolean matches(EntityRayTraceResult target) {
-        return super.matches(target) && target.getEntity().getClassification(false) != EntityClassification.MONSTER;
+    public boolean matches(EntityHitResult target) {
+        return super.matches(target) && target.getEntity().getClassification(false) != MobCategory.MONSTER;
     }
 }

@@ -1,9 +1,9 @@
 package io.github.derringersmods.toomanyglyphs.common.glyphs;
 
 import io.github.derringersmods.toomanyglyphs.api.filter.ITargetFilter;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 
 public class EffectFilterBlockOrLiving extends AbstractEffectFilter implements ITargetFilter {
 
@@ -14,13 +14,13 @@ public class EffectFilterBlockOrLiving extends AbstractEffectFilter implements I
     }
 
     @Override
-    public boolean matches(EntityRayTraceResult target) {
+    public boolean matches(EntityHitResult target) {
         if (!(target.getEntity() instanceof LivingEntity)) return false;
         return target.getEntity().isAlive();
     }
 
     @Override
-    public boolean matches(BlockRayTraceResult target) {
+    public boolean matches(BlockHitResult target) {
         return true;
     }
 }

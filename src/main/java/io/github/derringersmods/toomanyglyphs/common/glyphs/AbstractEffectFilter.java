@@ -2,11 +2,11 @@ package io.github.derringersmods.toomanyglyphs.common.glyphs;
 
 import com.hollingsworth.arsnouveau.api.spell.*;
 import io.github.derringersmods.toomanyglyphs.api.filter.ITargetFilter;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -20,12 +20,12 @@ public abstract class AbstractEffectFilter extends AbstractEffect implements ITa
     }
 
     @Override
-    public void onResolveEntity(EntityRayTraceResult rayTraceResult, World world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
+    public void onResolveEntity(EntityHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
         if (!matches(rayTraceResult)) spellContext.setCanceled(true);
     }
 
     @Override
-    public void onResolveBlock(BlockRayTraceResult rayTraceResult, World world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
+    public void onResolveBlock(BlockHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
         if (!matches(rayTraceResult)) spellContext.setCanceled(true);
     }
 
@@ -36,7 +36,7 @@ public abstract class AbstractEffectFilter extends AbstractEffect implements ITa
     }
 
     @Override
-    public int getManaCost() {
+    public int getDefaultManaCost() {
         return 0;
     }
 
@@ -47,23 +47,23 @@ public abstract class AbstractEffectFilter extends AbstractEffect implements ITa
     }
 
     @Override
-    public boolean matches(BlockRayTraceResult target) {
+    public boolean matches(BlockHitResult target) {
         return false;
     }
 
     @Override
-    public boolean matches(EntityRayTraceResult target) {
+    public boolean matches(EntityHitResult target) {
         return false;
     }
 
     @Override
-    public boolean wouldSucceed(RayTraceResult rayTraceResult, World world, LivingEntity shooter, List<AbstractAugment> augments) {
+    public boolean wouldSucceed(HitResult rayTraceResult, Level level, LivingEntity shooter, SpellStats stats, SpellContext context) {
         if (rayTraceResult == null) return false;
-        if (rayTraceResult.getType() == RayTraceResult.Type.MISS) return false;
-        if (rayTraceResult instanceof BlockRayTraceResult)
-            return matches((BlockRayTraceResult) rayTraceResult);
-        if (rayTraceResult instanceof EntityRayTraceResult)
-            return matches((EntityRayTraceResult) rayTraceResult);
+        if (rayTraceResult.getType() == HitResult.Type.MISS) return false;
+        if (rayTraceResult instanceof BlockHitResult)
+            return matches((BlockHitResult) rayTraceResult);
+        if (rayTraceResult instanceof EntityHitResult)
+            return matches((EntityHitResult) rayTraceResult);
         return false;
     }
 }

@@ -1,9 +1,9 @@
 package io.github.derringersmods.toomanyglyphs.common.network;
 
 import com.hollingsworth.arsnouveau.client.particle.ParticleColor;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkEvent;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,26 +30,26 @@ public class NetworkUtil {
         public void accept(MSG msg, NetworkEvent.Context context) { }
     }
 
-    public static void encode(@Nonnull PacketBuffer buf, @Nonnull Vector3d item) {
+    public static void encode(@Nonnull FriendlyByteBuf buf, @Nonnull Vec3 item) {
         buf.writeDouble(item.x);
         buf.writeDouble(item.y);
         buf.writeDouble(item.z);
     }
 
     @Nonnull
-    public static Vector3d decodeVector3d(@Nonnull PacketBuffer buf) {
+    public static Vec3 decodeVector3d(@Nonnull FriendlyByteBuf buf) {
         double x = buf.readDouble();
         double y = buf.readDouble();
         double z = buf.readDouble();
-        return new Vector3d(x, y, z);
+        return new Vec3(x, y, z);
     }
 
-    public static void encode(@Nonnull PacketBuffer buf, @Nonnull ParticleColor.IntWrapper item) {
+    public static void encode(@Nonnull FriendlyByteBuf buf, @Nonnull ParticleColor.IntWrapper item) {
         buf.writeInt((item.r << 16) | (item.g << 8) | item.b);
     }
 
     @Nonnull
-    public static ParticleColor.IntWrapper decodeParticleColorIntWrapper(@Nonnull PacketBuffer buf) {
+    public static ParticleColor.IntWrapper decodeParticleColorIntWrapper(@Nonnull FriendlyByteBuf buf) {
         int rgb = buf.readInt();
         return new ParticleColor.IntWrapper((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
     }

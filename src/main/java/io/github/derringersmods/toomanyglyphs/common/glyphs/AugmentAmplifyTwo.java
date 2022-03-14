@@ -3,6 +3,7 @@ package io.github.derringersmods.toomanyglyphs.common.glyphs;
 import com.hollingsworth.arsnouveau.api.spell.AbstractAugment;
 import com.hollingsworth.arsnouveau.api.spell.AbstractSpellPart;
 import com.hollingsworth.arsnouveau.api.spell.SpellStats;
+import com.hollingsworth.arsnouveau.api.spell.SpellTier;
 import com.hollingsworth.arsnouveau.common.spell.augment.AugmentAmplify;
 
 public class AugmentAmplifyTwo extends AbstractAugment {
@@ -14,13 +15,13 @@ public class AugmentAmplifyTwo extends AbstractAugment {
     }
 
     @Override
-    public int getManaCost() {
-        return AugmentAmplify.INSTANCE.getManaCost() * 4;
+    public int getDefaultManaCost() {
+        return AugmentAmplify.INSTANCE.getDefaultManaCost() * 4;
     }
 
     @Override
-    public Tier getTier() {
-        return Tier.TWO;
+    public SpellTier getTier() {
+        return SpellTier.TWO;
     }
 
     @Override

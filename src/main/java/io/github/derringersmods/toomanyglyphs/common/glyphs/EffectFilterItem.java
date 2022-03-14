@@ -1,7 +1,7 @@
 package io.github.derringersmods.toomanyglyphs.common.glyphs;
 
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.phys.EntityHitResult;
 
 public class EffectFilterItem extends EffectFilterEntity {
     public static final EffectFilterItem INSTANCE = new EffectFilterItem("filter_item", "Filter: Item");
@@ -11,7 +11,7 @@ public class EffectFilterItem extends EffectFilterEntity {
     }
 
     @Override
-    public boolean matches(EntityRayTraceResult target) {
+    public boolean matches(EntityHitResult target) {
         return super.matches(target) && target.getEntity() instanceof ItemEntity;
     }
 }

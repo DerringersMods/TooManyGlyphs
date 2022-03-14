@@ -5,15 +5,15 @@ import com.hollingsworth.arsnouveau.common.spell.augment.AugmentAOE;
 import com.hollingsworth.arsnouveau.common.spell.augment.AugmentPierce;
 import com.hollingsworth.arsnouveau.common.spell.augment.AugmentSensitive;
 import io.github.derringersmods.toomanyglyphs.common.network.PacketRayEffect;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import javax.annotation.Nonnull;
@@ -56,13 +56,13 @@ public class EffectChaining extends AbstractEffect {
         BONUS_ENTITY_DISTANCE = builder.comment("Bonus search distance around each target entity per augment").defineInRange("bonus_entity_distance", 4.0d, 0, Double.MAX_VALUE);
     }
 
-    private static Vector3d getBlockCenter(BlockPos blockPos)
+    private static Vec3 getBlockCenter(BlockPos blockPos)
     {
-        return new Vector3d(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5);
+        return new Vec3(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5);
     }
 
     @Override
-    public void onResolveBlock(BlockRayTraceResult rayTraceResult, World world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
+    public void onResolveBlock(BlockHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
         int maxBlocks = BASE_MAX_BLOCKS.get() + BONUS_BLOCKS.get() * spellStats.getBuffCount(AugmentAOE.INSTANCE);
         double searchDistance = BASE_BLOCK_DISTANCE.get() + BONUS_BLOCK_DISTANCE.get() * spellStats.getBuffCount(AugmentPierce.INSTANCE);
         int searchBlockDistance = (int) Math.ceil(searchDistance);
@@ -85,8 +85,8 @@ public class EffectChaining extends AbstractEffect {
         Spell continuation = new Spell(new ArrayList<>(spellContext.getSpell().recipe.subList(spellContext.getCurrentIndex(), spellContext.getSpell().getSpellSize())));
         for (Edge<BlockPos> edge : chain)
         {
-            Vector3d toCenter = getBlockCenter(edge.to);
-            BlockRayTraceResult chainedRayTraceResult = new BlockRayTraceResult(toCenter, rayTraceResult.getDirection(), edge.to,true);
+            Vec3 toCenter = getBlockCenter(edge.to);
+            BlockHitResult chainedRayTraceResult = new BlockHitResult(toCenter, rayTraceResult.getDirection(), edge.to,true);
             PacketRayEffect.send(world, spellContext, getBlockCenter(edge.from), getBlockCenter(edge.to));
             SpellContext newContext = new SpellContext(continuation, shooter).withColors(spellContext.colors);
             SpellResolver.resolveEffects(world, shooter, chainedRayTraceResult, continuation, newContext);
@@ -94,7 +94,7 @@ public class EffectChaining extends AbstractEffect {
     }
 
     @Override
-    public void onResolveEntity(EntityRayTraceResult rayTraceResult, World world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
+    public void onResolveEntity(EntityHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
         int maxEntities = BASE_MAX_ENTITIES.get() + BONUS_ENTITIES.get() * spellStats.getBuffCount(AugmentAOE.INSTANCE);
         double distance = BASE_ENTITY_DISTANCE.get() + BONUS_ENTITY_DISTANCE.get() * spellStats.getBuffCount(AugmentPierce.INSTANCE);
         double distanceSqr = distance * distance;
@@ -108,7 +108,7 @@ public class EffectChaining extends AbstractEffect {
                 e -> e.distanceTo(struck) * 0.01,
                 (e, isMatch) -> world.getEntitiesOfClass(
                         Entity.class,
-                        new AxisAlignedBB(
+                        new AABB(
                                 e.position().x + distance, e.position().y + distance, e.position().z + distance,
                                 e.position().x - distance, e.position().y - distance, e.position().z - distance),
                         t -> t.position().distanceToSqr(e.position()) <= distanceSqr && isMatch.test(t)),
@@ -119,17 +119,17 @@ public class EffectChaining extends AbstractEffect {
         {
             PacketRayEffect.send(world, spellContext, edge.from.position(), edge.to.position());
             SpellContext newContext = new SpellContext(continuation, shooter).withColors(spellContext.colors);
-            SpellResolver.resolveEffects(world, shooter, new EntityRayTraceResult(edge.to), continuation, newContext);
+            SpellResolver.resolveEffects(world, shooter, new EntityHitResult(edge.to), continuation, newContext);
         }
     }
 
     @Override
-    public Tier getTier() {
-        return Tier.TWO;
+    public SpellTier getTier() {
+        return SpellTier.TWO;
     }
 
     @Override
-    public int getManaCost() {
+    public int getDefaultManaCost() {
         return 300;
     }
 
@@ -139,7 +139,7 @@ public class EffectChaining extends AbstractEffect {
         return setOf(AugmentAOE.INSTANCE, AugmentPierce.INSTANCE, AugmentSensitive.INSTANCE);
     }
 
-    public static Iterable<BlockPos> SearchBlockStates(World world, Collection<BlockPos> start, int maxBlocks, int searchDistance, Predicate<BlockState> isMatch)
+    public static Iterable<BlockPos> SearchBlockStates(Level world, Collection<BlockPos> start, int maxBlocks, int searchDistance, Predicate<BlockState> isMatch)
     {
         LinkedList<BlockPos> searchQueue = new LinkedList<>(start);
         HashSet<BlockPos> searched = new HashSet<>(start);
@@ -186,7 +186,7 @@ public class EffectChaining extends AbstractEffect {
         }
     }
 
-    public static Iterable<Edge<Entity>> SearchEntities(World world, Collection<Entity> start, int maxEntities, double searchDistance, Predicate<Entity> isMatch)
+    public static Iterable<Edge<Entity>> SearchEntities(Level world, Collection<Entity> start, int maxEntities, double searchDistance, Predicate<Entity> isMatch)
     {
         HashMap<Entity, Edge<Entity>> bestEdgeForTo = new HashMap<>();
         PriorityQueue<Edge<Entity>> searchQueue = new PriorityQueue<>(Comparator.comparingDouble(item -> item.distanceSqr));
@@ -202,10 +202,10 @@ public class EffectChaining extends AbstractEffect {
             Entity current = currentEdge.to;
             selected.add(current);
             selectedEdges.add(currentEdge);
-            Vector3d position = current.position();
+            Vec3 position = current.position();
             List<Entity> neighbors = world.getEntitiesOfClass(
                     Entity.class,
-                    new AxisAlignedBB(
+                    new AABB(
                             position.x + searchDistance, position.y + searchDistance, position.z + searchDistance,
                             position.x - searchDistance, position.y - searchDistance, position.z - searchDistance),
                     e -> e.position().distanceToSqr(current.position()) <= searchDistanceSqr && isMatch.test(e) && !selected.contains(e));
@@ -226,7 +226,7 @@ public class EffectChaining extends AbstractEffect {
 
     public static <T> Iterable<Edge<T>> SearchTargets(Collection<T> start,
                                                       int maxTargets,
-                                                      Function<T, Vector3d> getPosition,
+                                                      Function<T, Vec3> getPosition,
                                                       Function<T, Double> distanceAdjustment,
                                                       BiFunction<T, Predicate<T>, Collection<T>> expandSearchNode,
                                                       Predicate<T> isMatch)
@@ -244,7 +244,7 @@ public class EffectChaining extends AbstractEffect {
             selected.add(current);
             selectedEdges.add(currentEdge);
             Collection<T> neighbors = expandSearchNode.apply(current, e -> !selected.contains(e) && isMatch.test(e));
-            Vector3d position = getPosition.apply(current);
+            Vec3 position = getPosition.apply(current);
             for (T neighbor : neighbors) {
                 double distanceSqr = getPosition.apply(neighbor).distanceToSqr(position) + distanceAdjustment.apply(neighbor);
                 Edge<T> bestKnown = bestEdgeForTo.get(neighbor);

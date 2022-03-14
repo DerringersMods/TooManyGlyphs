@@ -1,9 +1,9 @@
 package io.github.derringersmods.toomanyglyphs.common.glyphs;
 
 import com.hollingsworth.arsnouveau.api.spell.*;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,8 +19,8 @@ public class EffectReverseDirection extends AbstractEffect {
     }
 
     @Override
-    public void onResolveBlock(BlockRayTraceResult rayTraceResult, World world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
-        BlockRayTraceResult reversedRayTraceResult = rayTraceResult
+    public void onResolveBlock(BlockHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
+        BlockHitResult reversedRayTraceResult = rayTraceResult
                 .withPosition(rayTraceResult.isInside()
                         ? rayTraceResult.getBlockPos()
                         : rayTraceResult.getBlockPos().relative(rayTraceResult.getDirection()).relative(rayTraceResult.getDirection()))
@@ -35,10 +35,10 @@ public class EffectReverseDirection extends AbstractEffect {
     }
 
     @Override
-    public Tier getTier() { return Tier.ONE; }
+    public SpellTier getTier() { return SpellTier.ONE; }
 
     @Override
-    public int getManaCost() { return 0; }
+    public int getDefaultManaCost() { return 0; }
 
     @Nonnull
     @Override

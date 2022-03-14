@@ -31,7 +31,7 @@ public class ArsNouveauRegistry {
     }
 
     public static void register(AbstractSpellPart spellPart) {
-        ArsNouveauAPI.getInstance().registerSpell(spellPart.tag, spellPart);
+        ArsNouveauAPI.getInstance().registerSpell(spellPart.getId(), spellPart);
         registeredSpells.add(spellPart);
     }
 }

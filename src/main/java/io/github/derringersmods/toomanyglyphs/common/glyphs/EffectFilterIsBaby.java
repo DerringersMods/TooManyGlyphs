@@ -1,8 +1,9 @@
 package io.github.derringersmods.toomanyglyphs.common.glyphs;
 
-import net.minecraft.entity.AgeableEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.util.math.EntityRayTraceResult;
+import com.hollingsworth.arsnouveau.api.spell.SpellTier;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.phys.EntityHitResult;
+
 
 public class EffectFilterIsBaby extends EffectFilterEntity {
 
@@ -13,13 +14,13 @@ public class EffectFilterIsBaby extends EffectFilterEntity {
     }
 
     @Override
-    public Tier getTier() {
-        return Tier.TWO;
+    public SpellTier getTier() {
+        return SpellTier.TWO;
     }
 
     @Override
-    public boolean matches(EntityRayTraceResult target) {
-        if (!(target.getEntity() instanceof AgeableEntity)) return false;
-        return ((AgeableEntity)target.getEntity()).isBaby();
+    public boolean matches(EntityHitResult target) {
+        if (!(target.getEntity() instanceof AgeableMob)) return false;
+        return ((AgeableMob)target.getEntity()).isBaby();
     }
 }

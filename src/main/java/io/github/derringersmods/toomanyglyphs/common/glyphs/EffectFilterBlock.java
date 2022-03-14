@@ -1,16 +1,8 @@
 package io.github.derringersmods.toomanyglyphs.common.glyphs;
 
-import com.hollingsworth.arsnouveau.api.spell.*;
+import com.hollingsworth.arsnouveau.api.spell.SpellTier;
 import io.github.derringersmods.toomanyglyphs.api.filter.ITargetFilter;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.world.World;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.Set;
+import net.minecraft.world.phys.BlockHitResult;
 
 public class EffectFilterBlock extends AbstractEffectFilter implements ITargetFilter {
 
@@ -21,12 +13,12 @@ public class EffectFilterBlock extends AbstractEffectFilter implements ITargetFi
     }
 
     @Override
-    public Tier getTier() {
-        return Tier.ONE;
+    public SpellTier getTier() {
+        return SpellTier.ONE;
     }
 
     @Override
-    public boolean matches(BlockRayTraceResult target) {
+    public boolean matches(BlockHitResult target) {
         return true;
     }
 }

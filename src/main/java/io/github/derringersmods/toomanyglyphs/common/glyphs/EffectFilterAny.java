@@ -1,7 +1,8 @@
 package io.github.derringersmods.toomanyglyphs.common.glyphs;
 
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
+import com.hollingsworth.arsnouveau.api.spell.SpellTier;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 
 public class EffectFilterAny extends AbstractEffectFilter {
 
@@ -12,15 +13,15 @@ public class EffectFilterAny extends AbstractEffectFilter {
     }
 
     @Override
-    public Tier getTier() {
-        return Tier.ONE;
+    public SpellTier getTier() {
+        return SpellTier.ONE;
     }
 
     @Override
-    public boolean matches(BlockRayTraceResult target) {
+    public boolean matches(BlockHitResult target) {
         return true;
     }
 
     @Override
-    public boolean matches(EntityRayTraceResult target) { return true; }
+    public boolean matches(EntityHitResult target) { return true; }
 }
