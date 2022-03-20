@@ -1,6 +1,0 @@
-{
-  "type": "ars_nouveau:glyph_recipe",
-  "tier": "THREE",
-  "input": "minecraft:netherite_block",
-  "output": "ars_nouveau:glyph_amplify_three"
-}

@@ -1,6 +1,0 @@
-{
-  "type": "ars_nouveau:glyph_recipe",
-  "tier": "ONE",
-  "input": "minecraft:dandelion",
-  "output": "ars_nouveau:glyph_filter_living"
-}

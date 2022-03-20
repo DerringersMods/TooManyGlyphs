@@ -103,6 +103,7 @@ minecraft {
         }
     }
 }
+sourceSets.main.resources { srcDir "src/generated/resources" }
 mixin {
     add sourceSets.main, "toomanyglyphs.refmap.json"
     config 'toomanyglyphs.mixins.json'
