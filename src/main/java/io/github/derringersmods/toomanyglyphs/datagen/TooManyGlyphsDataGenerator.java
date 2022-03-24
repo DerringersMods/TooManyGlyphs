@@ -11,11 +11,11 @@ public class TooManyGlyphsDataGenerator {
 
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent event) {
-        System.out.println("Foofoo!");
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
         generator.addProvider(new GlyphRecipeProvider(generator));
+        generator.addProvider(new PatchouliProvider(generator));
     }
 
 }
