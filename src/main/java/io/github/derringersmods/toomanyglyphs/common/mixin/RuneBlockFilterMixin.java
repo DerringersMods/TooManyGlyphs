@@ -16,7 +16,6 @@ import javax.annotation.Nonnull;
 @Mixin(RuneBlock.class)
 public class RuneBlockFilterMixin {
     @Redirect(method = "entityInside",
-              remap = false,
               at = @At(value = "FIELD",
                        target = "Lcom/hollingsworth/arsnouveau/common/block/tile/RuneTile;touchedEntity:Lnet/minecraft/world/entity/Entity;",
                        opcode = Opcodes.PUTFIELD))
