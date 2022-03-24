@@ -1,7 +1,6 @@
 buildscript {
     repositories {
         maven { url 'https://files.minecraftforge.net/maven' }
-        jcenter()
         mavenCentral()
         maven { url 'https://modmaven.dev/' }
         maven {
@@ -24,7 +23,13 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0.2.0'
+def baseVersion = "2.0"
+def epoch = new Date(122, 2, 20)
+def offset = System.currentTimeMillis() - epoch.getTime()
+def day = (long) (offset / 86400000)
+def partDay = (long) ((offset % 86400000) / 5000)
+version = baseVersion + "." + day + "." + partDay
+
 group = 'io.github.derringersmods.toomanyglyphs' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'toomanyglyphs-1.18.1'
 
@@ -134,7 +139,6 @@ repositories {
         }
     }
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
-    jcenter()
     mavenCentral()
     mavenLocal()
 }
@@ -144,8 +148,9 @@ dependencies {
 	
 	runtimeOnly fg.deobf("curse.maven:exp-407174:3544525") // shutup experimental settings
 	
-    runtimeOnly fg.deobf("curse.maven:exp-401955:3675983")  // Ars Nouveau 2.2.10
-    compileOnly fg.deobf("curse.maven:exp-401955:3675983")
+    compileOnly fg.deobf("curse.maven:exp-401955:3704010")  // Ars Nouveau 2.2.10
+    runtimeOnly fg.deobf("curse.maven:exp-401955:3704010")  // Ars Nouveau 2.2.10
+    //compileOnly fg.deobf("curse.maven:exp-401955:3704010")
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:1.18.1-61:api")
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:1.18.1-61")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.18.1-61")
