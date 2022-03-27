@@ -34,8 +34,9 @@ public class GlyphRecipeProvider extends com.hollingsworth.arsnouveau.common.dat
 
         recipes.add(get(EffectFilterBlock.INSTANCE).withIngredient(Ingredient.of(Tags.Items.COBBLESTONE)));
         recipes.add(get(EffectFilterEntity.INSTANCE).withIngredient(Ingredient.of(Tags.Items.NUGGETS_IRON)));
-        recipes.add(get(EffectFilterLiving.INSTANCE).withItem(Items.DANDELION));
 
+        recipes.add(get(EffectFilterItem.INSTANCE).withItem(Items.EMERALD));
+        recipes.add(get(EffectFilterLiving.INSTANCE).withItem(Items.DANDELION));
         recipes.add(get(EffectFilterMonster.INSTANCE).withItem(Items.LILY_OF_THE_VALLEY));
         recipes.add(get(EffectFilterAnimal.INSTANCE).withItem(Items.BEEF));
         recipes.add(get(EffectFilterPlayer.INSTANCE).withItem(Items.POPPY));
