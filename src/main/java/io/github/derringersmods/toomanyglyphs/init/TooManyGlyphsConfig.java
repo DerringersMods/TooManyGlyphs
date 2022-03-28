@@ -9,7 +9,7 @@ import net.minecraftforge.fml.event.config.ModConfigEvent;
 public class TooManyGlyphsConfig {
 
     public static void registerGlyphConfigs(){
-        //RegistryHelper.generateConfig(TooManyGlyphsMod.MODID, ArsNouveauRegistry.registeredSpells);
+        RegistryHelper.generateConfig(TooManyGlyphsMod.MODID, ArsNouveauRegistry.registeredSpells);
     }
 
     @SubscribeEvent
