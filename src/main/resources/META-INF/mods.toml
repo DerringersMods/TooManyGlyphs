@@ -8,9 +8,9 @@ modLoader="javafml" #mandatory
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
 loaderVersion="[39,)" #mandatory
 # A URL to refer people to when problems occur with this mod
-#issueTrackerURL="http://my.issue.tracker/" #optional
+issueTrackerURL="https://github.com/DerringersMods/TooManyGlyphs/issues" #optional
 
-license="All Rights Reserved"
+license="LGPL v2.1+"
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 # The modid of the mod
@@ -56,5 +56,11 @@ A mixed bag of add-ons to make Ars Nouveau spells more flexible, more intelligen
     modId="ars_nouveau"
     mandatory=true
     versionRange="[2.0.0,)"
+    ordering="AFTER"
+    side="BOTH"
+[[dependencies.toomanyglyphs]]
+    modId="patchouli"
+    mandatory=false
+    versionRange="[1.18.1-61,)"
     ordering="AFTER"
     side="BOTH"
