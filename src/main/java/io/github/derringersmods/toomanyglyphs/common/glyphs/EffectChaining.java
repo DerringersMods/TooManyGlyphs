@@ -88,7 +88,7 @@ public class EffectChaining extends AbstractEffect {
             Vec3 toCenter = getBlockCenter(edge.to);
             BlockHitResult chainedRayTraceResult = new BlockHitResult(toCenter, rayTraceResult.getDirection(), edge.to,true);
             PacketRayEffect.send(world, spellContext, getBlockCenter(edge.from), getBlockCenter(edge.to));
-            SpellContext newContext = new SpellContext(continuation, shooter).withColors(spellContext.colors);
+            SpellContext newContext = new SpellContext(continuation, shooter).withType(spellContext.getType()).withCastingTile(spellContext.castingTile).withColors(spellContext.colors);
             SpellResolver.resolveEffects(world, shooter, chainedRayTraceResult, continuation, newContext);
         }
     }

@@ -19,7 +19,6 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,12 +29,12 @@ public class MethodRay extends AbstractCastMethod {
         super(tag, description);
     }
 
-    double getRange(SpellStats stats) {
+    static double getRange(SpellStats stats) {
         return BASE_RANGE.get() + BONUS_RANGE_PER_AUGMENT.get() * stats.getBuffCount(AugmentAOE.INSTANCE);
     }
 
-    public ForgeConfigSpec.DoubleValue BASE_RANGE;
-    public ForgeConfigSpec.DoubleValue BONUS_RANGE_PER_AUGMENT;
+    public static ForgeConfigSpec.DoubleValue BASE_RANGE;
+    public static ForgeConfigSpec.DoubleValue BONUS_RANGE_PER_AUGMENT;
 
     @Override
     public void buildConfig(ForgeConfigSpec.Builder builder) {
@@ -44,12 +43,19 @@ public class MethodRay extends AbstractCastMethod {
         BONUS_RANGE_PER_AUGMENT = builder.comment("Bonus range per augment").defineInRange("bonus_range_per_augment", 16d, 0d, Double.MAX_VALUE);
     }
 
-    public void fireRay(Level world, LivingEntity shooter, SpellStats stats, SpellContext spellContext, SpellResolver resolver) {
+    public static void fireRay(Level world, LivingEntity shooter, SpellStats stats, SpellContext spellContext, SpellResolver resolver) {
         int sensitivity = stats.getBuffCount(AugmentSensitive.INSTANCE);
         double range = getRange(stats);
 
         Vec3 fromPoint = shooter.getEyePosition(1.0f);
         Vec3 toPoint = fromPoint.add(shooter.getViewVector(1.0f).scale(range));
+
+        /* the ray is not aligned with turrets, tweaks are needed to the vectors
+        if (spellContext.getType() == SpellContext.CasterType.TURRET){
+
+        }
+        */
+
         ClipContext rayTraceContext = new ClipContext(fromPoint, toPoint, sensitivity >= 1 ? ClipContext.Block.OUTLINE : ClipContext.Block.COLLIDER, sensitivity >= 2 ? ClipContext.Fluid.ANY : ClipContext.Fluid.NONE, shooter);
         BlockHitResult blockTarget = world.clip(rayTraceContext);
 
