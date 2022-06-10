@@ -31,7 +31,7 @@ public class MethodRay extends AbstractCastMethod {
     }
 
     double getRange(SpellStats stats) {
-        return BASE_RANGE.get() + BONUS_RANGE_PER_AUGMENT.get() * stats.getBuffCount(AugmentAOE.INSTANCE);
+        return BASE_RANGE.get() + BONUS_RANGE_PER_AUGMENT.get() * stats.getAoeMultiplier();
     }
 
     public ForgeConfigSpec.DoubleValue BASE_RANGE;
