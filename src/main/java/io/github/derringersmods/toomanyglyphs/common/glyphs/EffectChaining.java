@@ -63,7 +63,7 @@ public class EffectChaining extends AbstractEffect {
 
     @Override
     public void onResolveBlock(BlockHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
-        int maxBlocks = BASE_MAX_BLOCKS.get() + BONUS_BLOCKS.get() * spellStats.getBuffCount(AugmentAOE.INSTANCE);
+        int maxBlocks = (int) (BASE_MAX_BLOCKS.get() + BONUS_BLOCKS.get() * spellStats.getAoeMultiplier());
         double searchDistance = BASE_BLOCK_DISTANCE.get() + BONUS_BLOCK_DISTANCE.get() * spellStats.getBuffCount(AugmentPierce.INSTANCE);
         int searchBlockDistance = (int) Math.ceil(searchDistance);
         double searchDistanceSqr = searchDistance * searchDistance;
@@ -88,14 +88,14 @@ public class EffectChaining extends AbstractEffect {
             Vec3 toCenter = getBlockCenter(edge.to);
             BlockHitResult chainedRayTraceResult = new BlockHitResult(toCenter, rayTraceResult.getDirection(), edge.to,true);
             PacketRayEffect.send(world, spellContext, getBlockCenter(edge.from), getBlockCenter(edge.to));
-            SpellContext newContext = new SpellContext(continuation, shooter).withColors(spellContext.colors);
+            SpellContext newContext = new SpellContext(continuation, shooter).withColors(spellContext.colors).withCastingTile(spellContext.castingTile);
             SpellResolver.resolveEffects(world, shooter, chainedRayTraceResult, continuation, newContext);
         }
     }
 
     @Override
     public void onResolveEntity(EntityHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
-        int maxEntities = BASE_MAX_ENTITIES.get() + BONUS_ENTITIES.get() * spellStats.getBuffCount(AugmentAOE.INSTANCE);
+        int maxEntities = (int) (BASE_MAX_ENTITIES.get() + BONUS_ENTITIES.get() * spellStats.getAoeMultiplier());
         double distance = BASE_ENTITY_DISTANCE.get() + BONUS_ENTITY_DISTANCE.get() * spellStats.getBuffCount(AugmentPierce.INSTANCE);
         double distanceSqr = distance * distance;
         Entity struck = rayTraceResult.getEntity();
