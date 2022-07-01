@@ -24,7 +24,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class EffectChaining extends AbstractEffect {
+public class EffectChaining extends AbstractTMGEffect {
 
     public static final EffectChaining INSTANCE = new EffectChaining("chaining", "Chaining");
 
@@ -62,7 +62,7 @@ public class EffectChaining extends AbstractEffect {
     }
 
     @Override
-    public void onResolveBlock(BlockHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
+    public void onResolveBlock(BlockHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext, SpellResolver resolver) {
         int maxBlocks = (int) (BASE_MAX_BLOCKS.get() + BONUS_BLOCKS.get() * spellStats.getAoeMultiplier());
         double searchDistance = BASE_BLOCK_DISTANCE.get() + BONUS_BLOCK_DISTANCE.get() * spellStats.getBuffCount(AugmentPierce.INSTANCE);
         int searchBlockDistance = (int) Math.ceil(searchDistance);
@@ -82,19 +82,19 @@ public class EffectChaining extends AbstractEffect {
                         .collect(Collectors.toCollection(ArrayList::new)),
                 bp -> world.getBlockState(bp).is(struck.getBlock()));
         spellContext.setCanceled(true);
-        Spell continuation = new Spell(new ArrayList<>(spellContext.getSpell().recipe.subList(spellContext.getCurrentIndex(), spellContext.getSpell().getSpellSize())));
+        Spell continuation = spellContext.getRemainingSpell();
         for (Edge<BlockPos> edge : chain)
         {
             Vec3 toCenter = getBlockCenter(edge.to);
             BlockHitResult chainedRayTraceResult = new BlockHitResult(toCenter, rayTraceResult.getDirection(), edge.to,true);
             PacketRayEffect.send(world, spellContext, getBlockCenter(edge.from), getBlockCenter(edge.to));
-            SpellContext newContext = new SpellContext(continuation, shooter).withColors(spellContext.colors).withCastingTile(spellContext.castingTile);
-            SpellResolver.resolveEffects(world, shooter, chainedRayTraceResult, continuation, newContext);
+            SpellContext newContext = spellContext.clone().withSpell(continuation);
+            resolver.getNewResolver(newContext).onResolveEffect(world, chainedRayTraceResult);
         }
     }
 
     @Override
-    public void onResolveEntity(EntityHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
+    public void onResolveEntity(EntityHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext, SpellResolver resolver) {
         int maxEntities = (int) (BASE_MAX_ENTITIES.get() + BONUS_ENTITIES.get() * spellStats.getAoeMultiplier());
         double distance = BASE_ENTITY_DISTANCE.get() + BONUS_ENTITY_DISTANCE.get() * spellStats.getBuffCount(AugmentPierce.INSTANCE);
         double distanceSqr = distance * distance;
@@ -114,12 +114,12 @@ public class EffectChaining extends AbstractEffect {
                         t -> t.position().distanceToSqr(e.position()) <= distanceSqr && isMatch.test(t)),
                 e -> e != shooter);
 
-        Spell continuation = new Spell(new ArrayList<>(spellContext.getSpell().recipe.subList(spellContext.getCurrentIndex(), spellContext.getSpell().getSpellSize())));
+        Spell continuation = spellContext.getRemainingSpell();
         for (Edge<Entity> edge : chain)
         {
             PacketRayEffect.send(world, spellContext, edge.from.position(), edge.to.position());
-            SpellContext newContext = new SpellContext(continuation, shooter).withColors(spellContext.colors);
-            SpellResolver.resolveEffects(world, shooter, new EntityHitResult(edge.to), continuation, newContext);
+            SpellContext newContext = spellContext.clone().withSpell(continuation);
+            resolver.getNewResolver(newContext).onResolveEffect(world, new EntityHitResult(edge.to));
         }
     }
 

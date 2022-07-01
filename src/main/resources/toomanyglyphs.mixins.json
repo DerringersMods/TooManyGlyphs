@@ -1,12 +1,11 @@
 {
   "required": true,
   "package": "io.github.derringersmods.toomanyglyphs.common.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_17",
   "refmap": "toomanyglyphs.refmap.json",
   "plugin": "io.github.derringersmods.toomanyglyphs.common.mixin.MixinPlugin",
   "mixins": [
-    "RuneBlockFilterMixin",
-    "AugmentCompatibilityValidatorMixin"
+    "RuneBlockFilterMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -6,7 +6,7 @@
 # The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
 modLoader="javafml" #mandatory
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
-loaderVersion="[39,)" #mandatory
+loaderVersion="[41,)" #mandatory
 # A URL to refer people to when problems occur with this mod
 issueTrackerURL="https://github.com/DerringersMods/TooManyGlyphs/issues" #optional
 
@@ -40,7 +40,7 @@ A mixed bag of add-ons to make Ars Nouveau spells more flexible, more intelligen
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[39.0.0,)" #mandatory
+    versionRange="[41.0.45,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
@@ -49,18 +49,18 @@ A mixed bag of add-ons to make Ars Nouveau spells more flexible, more intelligen
 [[dependencies.toomanyglyphs]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18.1,)"
+    versionRange="[1.19,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.toomanyglyphs]]
     modId="ars_nouveau"
     mandatory=true
-    versionRange="[2.0.0,)"
+    versionRange="[1.19.0-3.0.0,)"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.toomanyglyphs]]
     modId="patchouli"
     mandatory=false
-    versionRange="[1.18.1-61,)"
+    versionRange="[1.19-70,)"
     ordering="AFTER"
     side="BOTH"

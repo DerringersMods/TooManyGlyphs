@@ -7,11 +7,10 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
 
-public class EffectReverseDirection extends AbstractEffect {
+public class EffectReverseDirection extends AbstractTMGEffect {
     public static final EffectReverseDirection INSTANCE = new EffectReverseDirection("reverse_direction", "Reverse Direction");
 
     public EffectReverseDirection(String tag, String description) {
@@ -19,7 +18,7 @@ public class EffectReverseDirection extends AbstractEffect {
     }
 
     @Override
-    public void onResolveBlock(BlockHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
+    public void onResolveBlock(BlockHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext, SpellResolver resolver) {
         BlockHitResult reversedRayTraceResult = rayTraceResult
                 .withPosition(rayTraceResult.isInside()
                         ? rayTraceResult.getBlockPos()
@@ -29,9 +28,9 @@ public class EffectReverseDirection extends AbstractEffect {
         spellContext.setCanceled(true);
         if (spellContext.getCurrentIndex() >= spellContext.getSpell().recipe.size())
             return;
-        Spell continuation = new Spell(new ArrayList<>(spellContext.getSpell().recipe.subList(spellContext.getCurrentIndex(), spellContext.getSpell().getSpellSize())));
-        SpellContext newContext = new SpellContext(continuation, shooter).withColors(spellContext.colors);
-        SpellResolver.resolveEffects(world, shooter, reversedRayTraceResult, continuation, newContext);
+        Spell continuation = spellContext.getRemainingSpell();
+        SpellContext newContext = spellContext.clone().withSpell(continuation);
+        resolver.getNewResolver(newContext).onResolveEffect(world, reversedRayTraceResult);
     }
 
     @Override

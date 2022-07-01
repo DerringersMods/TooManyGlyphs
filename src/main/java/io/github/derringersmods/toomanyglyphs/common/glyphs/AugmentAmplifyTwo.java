@@ -6,7 +6,7 @@ import com.hollingsworth.arsnouveau.api.spell.SpellStats;
 import com.hollingsworth.arsnouveau.api.spell.SpellTier;
 import com.hollingsworth.arsnouveau.common.spell.augment.AugmentAmplify;
 
-public class AugmentAmplifyTwo extends AbstractAugment {
+public class AugmentAmplifyTwo extends AbstractTMGAugment {
 
     public static final AugmentAmplifyTwo INSTANCE = new AugmentAmplifyTwo("amplify_two", "Amplify II");
 

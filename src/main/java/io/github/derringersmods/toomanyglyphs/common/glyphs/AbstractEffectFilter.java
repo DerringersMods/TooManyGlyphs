@@ -14,18 +14,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public abstract class AbstractEffectFilter extends AbstractEffect implements ITargetFilter {
+public abstract class AbstractEffectFilter extends AbstractTMGEffect implements ITargetFilter {
     public AbstractEffectFilter(String tag, String description) {
         super(tag, description);
     }
 
     @Override
-    public void onResolveEntity(EntityHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
+    public void onResolveEntity(EntityHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext, SpellResolver resolver) {
         if (!matches(rayTraceResult)) spellContext.setCanceled(true);
     }
 
     @Override
-    public void onResolveBlock(BlockHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
+    public void onResolveBlock(BlockHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext, SpellResolver resolver) {
         if (!matches(rayTraceResult)) spellContext.setCanceled(true);
     }
 
@@ -56,7 +56,7 @@ public abstract class AbstractEffectFilter extends AbstractEffect implements ITa
         return false;
     }
 
-    @Override
+    //Does not override anymore
     public boolean wouldSucceed(HitResult rayTraceResult, Level level, LivingEntity shooter, SpellStats stats, SpellContext context) {
         if (rayTraceResult == null) return false;
         if (rayTraceResult.getType() == HitResult.Type.MISS) return false;
@@ -66,4 +66,5 @@ public abstract class AbstractEffectFilter extends AbstractEffect implements ITa
             return matches((EntityHitResult) rayTraceResult);
         return false;
     }
+
 }

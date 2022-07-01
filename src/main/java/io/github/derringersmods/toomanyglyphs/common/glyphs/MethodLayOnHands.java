@@ -17,10 +17,9 @@ import net.minecraft.world.phys.EntityHitResult;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
-public class MethodLayOnHands extends AbstractCastMethod {
+public class MethodLayOnHands extends AbstractTMGForm{
 
     public static final MethodLayOnHands INSTANCE = new MethodLayOnHands("lay_on_hands", "Lay on Hands");
 
@@ -44,61 +43,54 @@ public class MethodLayOnHands extends AbstractCastMethod {
     }
 
     @Override
-    public void onCast(@Nullable ItemStack itemStack, LivingEntity caster, Level world, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
-        if (getTargetFilter(spellContext).matches(new EntityHitResult(caster)))
+    public CastResolveType onCast(@Nullable ItemStack itemStack, LivingEntity caster, Level world, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
+        if (getTargetFilter(spellContext).matches(new EntityHitResult(caster))) {
             MethodSelf.INSTANCE.onCast(itemStack, caster, world, stats, spellContext, spellResolver);
-        else
+            return CastResolveType.SUCCESS;
+        }
+        else{
             spellContext.setCanceled(true);
+            return CastResolveType.FAILURE;
+        }
     }
 
     @Override
-    public void onCastOnBlock(UseOnContext itemUseContext, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
+    public CastResolveType onCastOnBlock(UseOnContext itemUseContext, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
         if (getTargetFilter(spellContext).matches(itemUseContext.getHitResult()))
             MethodTouch.INSTANCE.onCastOnBlock(itemUseContext, stats, spellContext, spellResolver);
         else if (itemUseContext.getPlayer() != null && getTargetFilter(spellContext).matches(new EntityHitResult(itemUseContext.getPlayer())))
             MethodSelf.INSTANCE.onCastOnBlock(itemUseContext, stats, spellContext, spellResolver);
-        else
+        else {
             spellContext.setCanceled(true);
+            return CastResolveType.FAILURE;
+        }
+        return CastResolveType.SUCCESS;
     }
 
     @Override
-    public void onCastOnBlock(BlockHitResult blockRayTraceResult, LivingEntity caster, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
+    public CastResolveType onCastOnBlock(BlockHitResult blockRayTraceResult, LivingEntity caster, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
         if (getTargetFilter(spellContext).matches(blockRayTraceResult))
             MethodTouch.INSTANCE.onCastOnBlock(blockRayTraceResult, caster, stats, spellContext, spellResolver);
         else if (getTargetFilter(spellContext).matches(new EntityHitResult(caster)))
             MethodSelf.INSTANCE.onCastOnBlock(blockRayTraceResult, caster,stats, spellContext, spellResolver);
-        else
+        else {
             spellContext.setCanceled(true);
+            return CastResolveType.FAILURE;
+        }
+        return CastResolveType.SUCCESS;
     }
 
     @Override
-    public void onCastOnEntity(@Nullable ItemStack itemStack, LivingEntity caster, Entity target, InteractionHand hand, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
+    public CastResolveType onCastOnEntity(@Nullable ItemStack itemStack, LivingEntity caster, Entity target, InteractionHand hand, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
         if (getTargetFilter(spellContext).matches(new EntityHitResult(target)))
             MethodTouch.INSTANCE.onCastOnEntity(itemStack, caster, target, hand, stats, spellContext, spellResolver);
         else if (getTargetFilter(spellContext).matches(new EntityHitResult(caster)))
             MethodSelf.INSTANCE.onCastOnEntity(itemStack, caster, target, hand, stats, spellContext, spellResolver);
-        else
+        else {
             spellContext.setCanceled(true);
-    }
-
-    @Override
-    public boolean wouldCastSuccessfully(@Nullable ItemStack itemStack, LivingEntity livingEntity, Level world, SpellStats stats, SpellResolver spellResolver) {
-        return false;
-    }
-
-    @Override
-    public boolean wouldCastOnBlockSuccessfully(UseOnContext itemUseContext, SpellStats stats, SpellResolver spellResolver) {
-        return false;
-    }
-
-    @Override
-    public boolean wouldCastOnBlockSuccessfully(BlockHitResult blockRayTraceResult, LivingEntity livingEntity, SpellStats stats, SpellResolver spellResolver) {
-        return false;
-    }
-
-    @Override
-    public boolean wouldCastOnEntitySuccessfully(@Nullable ItemStack itemStack, LivingEntity livingEntity, Entity entity, InteractionHand hand, SpellStats stats, SpellResolver spellResolver) {
-        return true;
+            return CastResolveType.FAILURE;
+        }
+        return CastResolveType.SUCCESS;
     }
 
     @Nonnull

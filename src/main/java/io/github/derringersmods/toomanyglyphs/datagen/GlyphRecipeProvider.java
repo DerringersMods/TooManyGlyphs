@@ -4,17 +4,20 @@ import com.hollingsworth.arsnouveau.common.crafting.recipes.GlyphRecipe;
 import com.hollingsworth.arsnouveau.setup.BlockRegistry;
 import com.hollingsworth.arsnouveau.setup.ItemsRegistry;
 import io.github.derringersmods.toomanyglyphs.common.glyphs.*;
+import io.github.derringersmods.toomanyglyphs.init.TooManyGlyphsMod;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 
 import java.io.IOException;
 import java.nio.file.Path;
+
+import static com.hollingsworth.arsnouveau.api.RegistryHelper.getRegistryName;
 
 public class GlyphRecipeProvider extends com.hollingsworth.arsnouveau.common.datagen.GlyphRecipeProvider {
     public GlyphRecipeProvider(DataGenerator generator) {
@@ -22,7 +25,7 @@ public class GlyphRecipeProvider extends com.hollingsworth.arsnouveau.common.dat
     }
 
     @Override
-    public void run(HashCache cache) throws IOException {
+    public void run(CachedOutput cache) throws IOException {
         recipes.add(get(MethodLayOnHands.INSTANCE).withIngredient(Ingredient.of(ItemTags.WOODEN_PRESSURE_PLATES)).withIngredient(Ingredient.of(ItemTags.BUTTONS)));
         recipes.add(get(MethodRay.INSTANCE).withItem(Items.TARGET).withItem(ItemsRegistry.SOURCE_GEM, 1));
 
@@ -48,6 +51,9 @@ public class GlyphRecipeProvider extends com.hollingsworth.arsnouveau.common.dat
 
         Path outputBase = generator.getOutputFolder();
         for (GlyphRecipe recipe : recipes)
-            DataProvider.save(GSON, cache, recipe.asRecipe(), getScribeGlyphPath(outputBase, recipe.output.getItem()));
+            DataProvider.saveStable(cache, recipe.asRecipe(), getScribeGlyphPath(outputBase, recipe.output.getItem()));
+    }
+    protected static Path getScribeGlyphPath(Path pathIn, Item glyph) {
+        return pathIn.resolve("data/"+ TooManyGlyphsMod.MODID +"/recipes/" + getRegistryName(glyph).getPath() + ".json");
     }
 }

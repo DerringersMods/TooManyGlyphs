@@ -14,8 +14,8 @@ public class TooManyGlyphsDataGenerator {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
-        generator.addProvider(new GlyphRecipeProvider(generator));
-        generator.addProvider(new PatchouliProvider(generator));
+        generator.addProvider(event.includeServer(), new GlyphRecipeProvider(generator));
+        generator.addProvider(event.includeServer(),new PatchouliProvider(generator));
     }
 
 }
