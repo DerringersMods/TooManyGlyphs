@@ -16,6 +16,8 @@ import net.minecraft.resources.ResourceLocation;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import com.hollingsworth.arsnouveau.common.datagen.PatchouliProvider.PatchouliPage;
+
 public class PatchouliProvider extends com.hollingsworth.arsnouveau.common.datagen.PatchouliProvider
 {
     public PatchouliProvider(DataGenerator generatorIn) {
