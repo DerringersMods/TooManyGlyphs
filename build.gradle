@@ -39,6 +39,16 @@ archivesBaseName = 'toomanyglyphs-1.19.0'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+configurations{
+    library
+}
+
+minecraft.runs.all {
+    lazyToken('minecraft_classpath') {
+        configurations.library.copyRecursive().resolve().collect { it.absolutePath }.join(File.pathSeparator)
+    }
+}
+
 minecraft {
 
 
@@ -119,7 +129,7 @@ mixin {
     debug.verbose
 }
 repositories {
-
+    maven { url 'https://jitpack.io' }
     maven {
         url = "https://maven.theillusivec4.top/"
     }
@@ -162,7 +172,10 @@ dependencies {
     implementation fg.deobf("top.theillusivec4.curios:curios-forge:${mc_version}-${curio_version}")
     implementation fg.deobf("vazkii.patchouli:Patchouli:${mc_version}-75")
 
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    implementation fg.deobf("com.github.LlamaLad7:MixinExtras:0.0.12")
+    library "com.github.LlamaLad7:MixinExtras:0.0.12"
+    annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.12"
+    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
 }
 
