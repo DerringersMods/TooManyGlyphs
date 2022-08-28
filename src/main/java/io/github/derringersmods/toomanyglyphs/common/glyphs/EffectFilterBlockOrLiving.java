@@ -14,13 +14,13 @@ public class EffectFilterBlockOrLiving extends AbstractEffectFilter implements I
     }
 
     @Override
-    public boolean matches(EntityHitResult target) {
-        if (!(target.getEntity() instanceof LivingEntity)) return false;
-        return target.getEntity().isAlive();
+    public boolean shouldResolveOnEntity(EntityHitResult target) {
+        if (!(target.getEntity() instanceof LivingEntity living)) return false;
+        return living.isAlive();
     }
 
     @Override
-    public boolean matches(BlockHitResult target) {
+    public boolean shouldResolveOnBlock(BlockHitResult target) {
         return true;
     }
 }

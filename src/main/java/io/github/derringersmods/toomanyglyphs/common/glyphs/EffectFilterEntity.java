@@ -11,7 +11,7 @@ public class EffectFilterEntity extends AbstractEffectFilter {
     }
 
     @Override
-    public boolean matches(EntityHitResult target) {
+    public boolean shouldResolveOnEntity(EntityHitResult target) {
         return true;
     }
 }

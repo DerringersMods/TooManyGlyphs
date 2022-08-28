@@ -12,7 +12,7 @@ public class EffectFilterPlayer extends EffectFilterLiving {
     }
 
     @Override
-    public boolean matches(EntityHitResult target) {
-        return super.matches(target) && (target.getEntity() instanceof Player || target.getEntity() instanceof EntityDummy);
+    public boolean shouldResolveOnEntity(EntityHitResult target) {
+        return super.shouldResolveOnEntity(target) && (target.getEntity() instanceof Player || target.getEntity() instanceof EntityDummy);
     }
 }

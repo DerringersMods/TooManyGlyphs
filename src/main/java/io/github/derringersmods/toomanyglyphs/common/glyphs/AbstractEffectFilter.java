@@ -11,7 +11,6 @@ import net.minecraft.world.phys.HitResult;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 public abstract class AbstractEffectFilter extends AbstractTMGEffect implements ITargetFilter {
@@ -21,12 +20,12 @@ public abstract class AbstractEffectFilter extends AbstractTMGEffect implements 
 
     @Override
     public void onResolveEntity(EntityHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext, SpellResolver resolver) {
-        if (!matches(rayTraceResult)) spellContext.setCanceled(true);
+        if (!shouldResolveOnEntity(rayTraceResult)) spellContext.setCanceled(true);
     }
 
     @Override
     public void onResolveBlock(BlockHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext, SpellResolver resolver) {
-        if (!matches(rayTraceResult)) spellContext.setCanceled(true);
+        if (!shouldResolveOnBlock(rayTraceResult)) spellContext.setCanceled(true);
     }
 
     @Nonnull
@@ -47,12 +46,12 @@ public abstract class AbstractEffectFilter extends AbstractTMGEffect implements 
     }
 
     @Override
-    public boolean matches(BlockHitResult target) {
+    public boolean shouldResolveOnBlock(BlockHitResult target) {
         return false;
     }
 
     @Override
-    public boolean matches(EntityHitResult target) {
+    public boolean shouldResolveOnEntity(EntityHitResult target) {
         return false;
     }
 
@@ -61,9 +60,9 @@ public abstract class AbstractEffectFilter extends AbstractTMGEffect implements 
         if (rayTraceResult == null) return false;
         if (rayTraceResult.getType() == HitResult.Type.MISS) return false;
         if (rayTraceResult instanceof BlockHitResult)
-            return matches((BlockHitResult) rayTraceResult);
+            return shouldResolveOnBlock((BlockHitResult) rayTraceResult);
         if (rayTraceResult instanceof EntityHitResult)
-            return matches((EntityHitResult) rayTraceResult);
+            return shouldResolveOnEntity((EntityHitResult) rayTraceResult);
         return false;
     }
 

@@ -21,7 +21,7 @@ public class RuneBlockFilterMixin {
                        opcode = Opcodes.PUTFIELD))
     private void entityInsideFilterCheck(@Nonnull RuneTile instance, Entity value) {
         if (instance.touchedEntity != null) return;
-        if (!FilterUtil.getTargetFilter(instance.spell, EffectFilterAny.INSTANCE).matches(new EntityHitResult(value))) return;
+        if (!FilterUtil.getTargetFilter(instance.spell, EffectFilterAny.INSTANCE).shouldResolveOnEntity(new EntityHitResult(value))) return;
         instance.touchedEntity = value;
     }
 }

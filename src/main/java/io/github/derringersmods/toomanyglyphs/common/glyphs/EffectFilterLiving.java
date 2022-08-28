@@ -12,7 +12,7 @@ public class EffectFilterLiving extends AbstractEffectFilter {
     }
 
     @Override
-    public boolean matches(EntityHitResult target) {
+    public boolean shouldResolveOnEntity(EntityHitResult target) {
         if (!(target.getEntity() instanceof LivingEntity)) return false;
         return target.getEntity().isAlive();
     }

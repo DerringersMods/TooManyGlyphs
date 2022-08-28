@@ -11,7 +11,7 @@ public class EffectFilterItem extends EffectFilterEntity {
     }
 
     @Override
-    public boolean matches(EntityHitResult target) {
-        return super.matches(target) && target.getEntity() instanceof ItemEntity;
+    public boolean shouldResolveOnEntity(EntityHitResult target) {
+        return super.shouldResolveOnEntity(target) && target.getEntity() instanceof ItemEntity;
     }
 }

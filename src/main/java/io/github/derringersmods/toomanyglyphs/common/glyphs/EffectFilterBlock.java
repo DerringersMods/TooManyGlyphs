@@ -18,7 +18,7 @@ public class EffectFilterBlock extends AbstractEffectFilter implements ITargetFi
     }
 
     @Override
-    public boolean matches(BlockHitResult target) {
+    public boolean shouldResolveOnBlock(BlockHitResult target) {
         return true;
     }
 }

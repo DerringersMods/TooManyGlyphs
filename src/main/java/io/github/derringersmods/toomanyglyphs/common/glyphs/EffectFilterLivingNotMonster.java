@@ -11,7 +11,7 @@ public class EffectFilterLivingNotMonster extends EffectFilterLiving {
     }
 
     @Override
-    public boolean matches(EntityHitResult target) {
-        return super.matches(target) && target.getEntity().getClassification(false) != MobCategory.MONSTER;
+    public boolean shouldResolveOnEntity(EntityHitResult target) {
+        return super.shouldResolveOnEntity(target) && target.getEntity().getClassification(false) != MobCategory.MONSTER;
     }
 }

@@ -44,7 +44,7 @@ public class MethodLayOnHands extends AbstractTMGForm{
 
     @Override
     public CastResolveType onCast(@Nullable ItemStack itemStack, LivingEntity caster, Level world, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
-        if (getTargetFilter(spellContext).matches(new EntityHitResult(caster))) {
+        if (getTargetFilter(spellContext).shouldResolveOnEntity(new EntityHitResult(caster))) {
             MethodSelf.INSTANCE.onCast(itemStack, caster, world, stats, spellContext, spellResolver);
             return CastResolveType.SUCCESS;
         }
@@ -56,9 +56,9 @@ public class MethodLayOnHands extends AbstractTMGForm{
 
     @Override
     public CastResolveType onCastOnBlock(UseOnContext itemUseContext, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
-        if (getTargetFilter(spellContext).matches(itemUseContext.getHitResult()))
+        if (getTargetFilter(spellContext).shouldResolveOnBlock(itemUseContext.getHitResult()))
             MethodTouch.INSTANCE.onCastOnBlock(itemUseContext, stats, spellContext, spellResolver);
-        else if (itemUseContext.getPlayer() != null && getTargetFilter(spellContext).matches(new EntityHitResult(itemUseContext.getPlayer())))
+        else if (itemUseContext.getPlayer() != null && getTargetFilter(spellContext).shouldResolveOnEntity(new EntityHitResult(itemUseContext.getPlayer())))
             MethodSelf.INSTANCE.onCastOnBlock(itemUseContext, stats, spellContext, spellResolver);
         else {
             spellContext.setCanceled(true);
@@ -69,9 +69,9 @@ public class MethodLayOnHands extends AbstractTMGForm{
 
     @Override
     public CastResolveType onCastOnBlock(BlockHitResult blockRayTraceResult, LivingEntity caster, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
-        if (getTargetFilter(spellContext).matches(blockRayTraceResult))
+        if (getTargetFilter(spellContext).shouldResolveOnBlock(blockRayTraceResult))
             MethodTouch.INSTANCE.onCastOnBlock(blockRayTraceResult, caster, stats, spellContext, spellResolver);
-        else if (getTargetFilter(spellContext).matches(new EntityHitResult(caster)))
+        else if (getTargetFilter(spellContext).shouldResolveOnEntity(new EntityHitResult(caster)))
             MethodSelf.INSTANCE.onCastOnBlock(blockRayTraceResult, caster,stats, spellContext, spellResolver);
         else {
             spellContext.setCanceled(true);
@@ -82,9 +82,9 @@ public class MethodLayOnHands extends AbstractTMGForm{
 
     @Override
     public CastResolveType onCastOnEntity(@Nullable ItemStack itemStack, LivingEntity caster, Entity target, InteractionHand hand, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
-        if (getTargetFilter(spellContext).matches(new EntityHitResult(target)))
+        if (getTargetFilter(spellContext).shouldResolveOnEntity(new EntityHitResult(target)))
             MethodTouch.INSTANCE.onCastOnEntity(itemStack, caster, target, hand, stats, spellContext, spellResolver);
-        else if (getTargetFilter(spellContext).matches(new EntityHitResult(caster)))
+        else if (getTargetFilter(spellContext).shouldResolveOnEntity(new EntityHitResult(caster)))
             MethodSelf.INSTANCE.onCastOnEntity(itemStack, caster, target, hand, stats, spellContext, spellResolver);
         else {
             spellContext.setCanceled(true);

@@ -18,8 +18,8 @@ public class EffectFilterIsMature extends EffectFilterEntity {
     }
 
     @Override
-    public boolean matches(EntityHitResult target) {
-        if (!(target.getEntity() instanceof AgeableMob)) return false;
-        return !((AgeableMob)target.getEntity()).isBaby();
+    public boolean shouldResolveOnEntity(EntityHitResult target) {
+        if (!(target.getEntity() instanceof AgeableMob ageableMob)) return false;
+        return !ageableMob.isBaby();
     }
 }

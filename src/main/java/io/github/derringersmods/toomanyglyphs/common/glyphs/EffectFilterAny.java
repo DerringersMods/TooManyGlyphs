@@ -18,10 +18,10 @@ public class EffectFilterAny extends AbstractEffectFilter {
     }
 
     @Override
-    public boolean matches(BlockHitResult target) {
+    public boolean shouldResolveOnBlock(BlockHitResult target) {
         return true;
     }
 
     @Override
-    public boolean matches(EntityHitResult target) { return true; }
+    public boolean shouldResolveOnEntity(EntityHitResult target) { return true; }
 }

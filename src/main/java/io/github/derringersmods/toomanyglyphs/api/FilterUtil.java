@@ -5,8 +5,6 @@ import com.hollingsworth.arsnouveau.api.spell.AbstractSpellPart;
 import com.hollingsworth.arsnouveau.api.spell.Spell;
 import com.hollingsworth.arsnouveau.api.spell.SpellContext;
 import io.github.derringersmods.toomanyglyphs.api.filter.ITargetFilter;
-import io.github.derringersmods.toomanyglyphs.common.glyphs.EffectFilterLivingNotMonster;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.classic.Abs;
 
 import java.util.List;
 

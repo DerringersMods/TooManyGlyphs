@@ -1,11 +1,7 @@
 package io.github.derringersmods.toomanyglyphs.api.filter;
 
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
+import com.hollingsworth.arsnouveau.api.spell.IFilter;
 
-import javax.annotation.Nonnull;
+public interface ITargetFilter extends IFilter {
 
-public interface ITargetFilter {
-    boolean matches(BlockHitResult target);
-    boolean matches(EntityHitResult target);
 }
