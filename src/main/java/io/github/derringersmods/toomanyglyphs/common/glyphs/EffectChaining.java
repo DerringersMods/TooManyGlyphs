@@ -5,7 +5,9 @@ import com.hollingsworth.arsnouveau.common.spell.augment.AugmentAOE;
 import com.hollingsworth.arsnouveau.common.spell.augment.AugmentPierce;
 import com.hollingsworth.arsnouveau.common.spell.augment.AugmentSensitive;
 import io.github.derringersmods.toomanyglyphs.common.network.PacketRayEffect;
+import io.github.derringersmods.toomanyglyphs.init.TooManyGlyphsMod;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -26,9 +28,9 @@ import java.util.stream.Collectors;
 
 public class EffectChaining extends AbstractEffect {
 
-    public static final EffectChaining INSTANCE = new EffectChaining("chaining", "Chaining");
+    public static final EffectChaining INSTANCE = new EffectChaining(new ResourceLocation(TooManyGlyphsMod.MODID, "glyph_chaining"), "Chaining");
 
-    public EffectChaining(String tag, String description) {
+    public EffectChaining(ResourceLocation tag, String description) {
         super(tag, description);
     }
 
@@ -62,7 +64,7 @@ public class EffectChaining extends AbstractEffect {
     }
 
     @Override
-    public void onResolveBlock(BlockHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
+    public void onResolveBlock(BlockHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext, SpellResolver spellResolver) {
         int maxBlocks = BASE_MAX_BLOCKS.get() + BONUS_BLOCKS.get() * spellStats.getBuffCount(AugmentAOE.INSTANCE);
         double searchDistance = BASE_BLOCK_DISTANCE.get() + BONUS_BLOCK_DISTANCE.get() * spellStats.getBuffCount(AugmentPierce.INSTANCE);
         int searchBlockDistance = (int) Math.ceil(searchDistance);
@@ -82,19 +84,18 @@ public class EffectChaining extends AbstractEffect {
                         .collect(Collectors.toCollection(ArrayList::new)),
                 bp -> world.getBlockState(bp).is(struck.getBlock()));
         spellContext.setCanceled(true);
-        Spell continuation = new Spell(new ArrayList<>(spellContext.getSpell().recipe.subList(spellContext.getCurrentIndex(), spellContext.getSpell().getSpellSize())));
+        Spell continuation = spellContext.getRemainingSpell();
         for (Edge<BlockPos> edge : chain)
         {
             Vec3 toCenter = getBlockCenter(edge.to);
             BlockHitResult chainedRayTraceResult = new BlockHitResult(toCenter, rayTraceResult.getDirection(), edge.to,true);
             PacketRayEffect.send(world, spellContext, getBlockCenter(edge.from), getBlockCenter(edge.to));
-            SpellContext newContext = new SpellContext(continuation, shooter).withColors(spellContext.colors);
-            SpellResolver.resolveEffects(world, shooter, chainedRayTraceResult, continuation, newContext);
+            spellResolver.getNewResolver(spellContext.clone().withSpell(continuation)).onResolveEffect(world, chainedRayTraceResult);
         }
     }
 
     @Override
-    public void onResolveEntity(EntityHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext) {
+    public void onResolveEntity(EntityHitResult rayTraceResult, Level world, @Nullable LivingEntity shooter, SpellStats spellStats, SpellContext spellContext, SpellResolver spellResolver) {
         int maxEntities = BASE_MAX_ENTITIES.get() + BONUS_ENTITIES.get() * spellStats.getBuffCount(AugmentAOE.INSTANCE);
         double distance = BASE_ENTITY_DISTANCE.get() + BONUS_ENTITY_DISTANCE.get() * spellStats.getBuffCount(AugmentPierce.INSTANCE);
         double distanceSqr = distance * distance;
@@ -114,12 +115,11 @@ public class EffectChaining extends AbstractEffect {
                         t -> t.position().distanceToSqr(e.position()) <= distanceSqr && isMatch.test(t)),
                 e -> e != shooter);
 
-        Spell continuation = new Spell(new ArrayList<>(spellContext.getSpell().recipe.subList(spellContext.getCurrentIndex(), spellContext.getSpell().getSpellSize())));
+        Spell continuation = spellContext.getRemainingSpell();
         for (Edge<Entity> edge : chain)
         {
             PacketRayEffect.send(world, spellContext, edge.from.position(), edge.to.position());
-            SpellContext newContext = new SpellContext(continuation, shooter).withColors(spellContext.colors);
-            SpellResolver.resolveEffects(world, shooter, new EntityHitResult(edge.to), continuation, newContext);
+            spellResolver.getNewResolver(spellContext.clone().withSpell(continuation)).onResolveEffect(world, new EntityHitResult(edge.to));
         }
     }
 
@@ -137,28 +137,6 @@ public class EffectChaining extends AbstractEffect {
     @Override
     public Set<AbstractAugment> getCompatibleAugments() {
         return setOf(AugmentAOE.INSTANCE, AugmentPierce.INSTANCE, AugmentSensitive.INSTANCE);
-    }
-
-    public static Iterable<BlockPos> SearchBlockStates(Level world, Collection<BlockPos> start, int maxBlocks, int searchDistance, Predicate<BlockState> isMatch)
-    {
-        LinkedList<BlockPos> searchQueue = new LinkedList<>(start);
-        HashSet<BlockPos> searched = new HashSet<>(start);
-        ArrayList<BlockPos> found = new ArrayList<>();
-
-        while(!searchQueue.isEmpty() && found.size() < maxBlocks) {
-            BlockPos current = searchQueue.removeFirst();
-            BlockState state = world.getBlockState(current);
-            if (isMatch.test(state)) {
-                found.add(current);
-                BlockPos.betweenClosedStream(current.offset(searchDistance, searchDistance, searchDistance), current.offset(-searchDistance, -searchDistance, -searchDistance)).forEach(neighborMutable -> {
-                    if (searched.contains(neighborMutable)) return;
-                    BlockPos neighbor = neighborMutable.immutable();
-                    searched.add(neighbor);
-                    searchQueue.add(neighbor);
-                });
-            }
-        }
-        return found;
     }
 
     public static class Edge<T> {
@@ -184,44 +162,6 @@ public class EffectChaining extends AbstractEffect {
         public int hashCode() {
             return Objects.hash(distanceSqr, from, to);
         }
-    }
-
-    public static Iterable<Edge<Entity>> SearchEntities(Level world, Collection<Entity> start, int maxEntities, double searchDistance, Predicate<Entity> isMatch)
-    {
-        HashMap<Entity, Edge<Entity>> bestEdgeForTo = new HashMap<>();
-        PriorityQueue<Edge<Entity>> searchQueue = new PriorityQueue<>(Comparator.comparingDouble(item -> item.distanceSqr));
-        HashSet<Entity> selected = new HashSet<>();
-        ArrayList<Edge<Entity>> selectedEdges = new ArrayList<>();
-        double searchDistanceSqr = searchDistance * searchDistance;
-
-        start.stream().filter(isMatch).map(e -> new Edge<>(0d, e, e)).forEach(searchQueue::add);
-
-        while (!searchQueue.isEmpty() && selected.size() < maxEntities)
-        {
-            Edge<Entity> currentEdge = searchQueue.poll();
-            Entity current = currentEdge.to;
-            selected.add(current);
-            selectedEdges.add(currentEdge);
-            Vec3 position = current.position();
-            List<Entity> neighbors = world.getEntitiesOfClass(
-                    Entity.class,
-                    new AABB(
-                            position.x + searchDistance, position.y + searchDistance, position.z + searchDistance,
-                            position.x - searchDistance, position.y - searchDistance, position.z - searchDistance),
-                    e -> e.position().distanceToSqr(current.position()) <= searchDistanceSqr && isMatch.test(e) && !selected.contains(e));
-            for (Entity neighbor : neighbors) {
-                double distanceSqr = neighbor.position().distanceToSqr(current.position());
-                Edge<Entity> bestKnown = bestEdgeForTo.get(neighbor);
-                if (bestKnown == null || bestKnown.distanceSqr > distanceSqr) {
-                    Edge<Entity> toAdd = new Edge<>(distanceSqr, current, neighbor);
-                    if (bestKnown != null) searchQueue.remove(bestKnown);
-                    searchQueue.add(toAdd);
-                    bestEdgeForTo.put(neighbor, toAdd);
-                }
-            }
-        }
-
-        return selectedEdges;
     }
 
     public static <T> Iterable<Edge<T>> SearchTargets(Collection<T> start,

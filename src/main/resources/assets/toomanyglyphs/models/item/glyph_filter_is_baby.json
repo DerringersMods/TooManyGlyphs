@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "ars_nouveau:items/filter_living_not_player"
+    "layer0": "toomanyglyphs:items/filter_is_baby"
   }
 }

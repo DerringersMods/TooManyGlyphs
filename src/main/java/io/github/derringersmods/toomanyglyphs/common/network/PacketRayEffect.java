@@ -24,25 +24,25 @@ import java.util.function.Supplier;
 public class PacketRayEffect {
     public Vec3 from;
     public Vec3 to;
-    public ParticleColor.IntWrapper colors;
+    public ParticleColor color;
 
-    public PacketRayEffect(Vec3 from, Vec3 to, ParticleColor.IntWrapper colors) {
+    public PacketRayEffect(Vec3 from, Vec3 to, ParticleColor colors) {
         this.from = from;
         this.to = to;
-        this.colors = colors;
+        this.color = colors;
     }
 
     public static void encode(PacketRayEffect msg, FriendlyByteBuf buf) {
         NetworkUtil.encode(buf, msg.from);
         NetworkUtil.encode(buf, msg.to);
-        NetworkUtil.encode(buf, msg.colors);
+        NetworkUtil.encode(buf, msg.color);
     }
 
     public static PacketRayEffect decode(FriendlyByteBuf buf) {
         Vec3 from = NetworkUtil.decodeVector3d(buf);
         Vec3 to = NetworkUtil.decodeVector3d(buf);
-        ParticleColor.IntWrapper colors = NetworkUtil.decodeParticleColorIntWrapper(buf);
-        return new PacketRayEffect(from, to, colors);
+        ParticleColor color = NetworkUtil.decodeParticleColor(buf);
+        return new PacketRayEffect(from, to, color);
     }
 
     public static void handle(final PacketRayEffect msg, Supplier<NetworkEvent.Context> contextSupplier) {
@@ -71,7 +71,7 @@ public class PacketRayEffect {
                 double fractionalDistance = d / distance;
                 double speedCoefficient = Mth.lerp(fractionalDistance, 0.2, 0.001);
                 level.addParticle(
-                        GlowParticleData.createData(msg.colors.toParticleColor()),
+                        GlowParticleData.createData(msg.color),
                         Mth.lerp(fractionalDistance, msg.from.x, msg.to.x),
                         Mth.lerp(fractionalDistance, msg.from.y, msg.to.y),
                         Mth.lerp(fractionalDistance, msg.from.z, msg.to.z),
@@ -88,10 +88,9 @@ public class PacketRayEffect {
         double radius = 64.0 + fromPoint.distanceTo(midpoint);
         double radiusSqr = radius * radius;
 
-        if (level instanceof ServerLevel)
+        if (level instanceof ServerLevel serverLevel)
         {
-            PacketRayEffect fx = new PacketRayEffect(fromPoint, hitPoint, spellContext.colors);
-            ServerLevel serverLevel = (ServerLevel) level;
+            PacketRayEffect fx = new PacketRayEffect(fromPoint, hitPoint, spellContext.getColors());
             serverLevel.getChunkSource().chunkMap.getPlayers(new ChunkPos(new BlockPos(midpoint)), false)
                     .stream()
                     .filter(p -> p.distanceToSqr(midpoint) <= radiusSqr)

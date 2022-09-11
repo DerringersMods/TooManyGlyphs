@@ -44,13 +44,13 @@ public class NetworkUtil {
         return new Vec3(x, y, z);
     }
 
-    public static void encode(@Nonnull FriendlyByteBuf buf, @Nonnull ParticleColor.IntWrapper item) {
-        buf.writeInt((item.r << 16) | (item.g << 8) | item.b);
+    public static void encode(@Nonnull FriendlyByteBuf buf, @Nonnull ParticleColor item) {
+        buf.writeInt(item.getColor());
     }
 
     @Nonnull
-    public static ParticleColor.IntWrapper decodeParticleColorIntWrapper(@Nonnull FriendlyByteBuf buf) {
+    public static ParticleColor decodeParticleColor(@Nonnull FriendlyByteBuf buf) {
         int rgb = buf.readInt();
-        return new ParticleColor.IntWrapper((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
+        return ParticleColor.fromInt(rgb);
     }
 }

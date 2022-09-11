@@ -31,7 +31,19 @@ public class ArsNouveauRegistry {
     }
 
     public static void register(AbstractSpellPart spellPart) {
-        ArsNouveauAPI.getInstance().registerSpell(spellPart.getId(), spellPart);
+        // anti-derp assertion
+        if (!TooManyGlyphsMod.MODID.equals(spellPart.getRegistryName().getNamespace())) {
+            TooManyGlyphsMod.LOGGER.atFatal().log("Unintended unsafe glyph namespace '{}' found in glyph '{}'.",
+                    spellPart.getRegistryName().getNamespace(),
+                    spellPart.getRegistryName().getPath());
+            throw new AssertionError();
+        }
+        if (!"glyph_".equals(spellPart.getRegistryName().getPath().substring(0, 6))) {
+            TooManyGlyphsMod.LOGGER.atFatal().log("Unintended unsafe glyph name '{}' does not begin with 'glyph_'.",
+                    spellPart.getRegistryName().getPath());
+            throw new AssertionError();
+        }
+        ArsNouveauAPI.getInstance().registerSpell(spellPart);
         registeredSpells.add(spellPart);
     }
 }

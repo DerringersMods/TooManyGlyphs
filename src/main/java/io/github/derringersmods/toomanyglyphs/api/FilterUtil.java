@@ -12,7 +12,7 @@ import java.util.List;
 
 public class FilterUtil {
     public static ITargetFilter getTargetFilter(SpellContext spellContext, ITargetFilter defaultFilter) {
-        return getTargetFilter(spellContext.getSpell().recipe.subList(spellContext.getCurrentIndex(), spellContext.getSpell().getSpellSize()), defaultFilter);
+        return getTargetFilter(spellContext.getRemainingSpell(), defaultFilter);
     }
 
     public static ITargetFilter getTargetFilter(Spell spell, ITargetFilter defaultFilter) {

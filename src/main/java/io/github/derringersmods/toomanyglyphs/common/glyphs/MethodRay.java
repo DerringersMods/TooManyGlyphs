@@ -4,8 +4,10 @@ import com.hollingsworth.arsnouveau.api.spell.*;
 import com.hollingsworth.arsnouveau.common.spell.augment.AugmentAOE;
 import com.hollingsworth.arsnouveau.common.spell.augment.AugmentSensitive;
 import io.github.derringersmods.toomanyglyphs.common.network.PacketRayEffect;
+import io.github.derringersmods.toomanyglyphs.init.TooManyGlyphsMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,14 +21,13 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class MethodRay extends AbstractCastMethod {
-    public static final MethodRay INSTANCE = new MethodRay("ray", "Ray");
+    public static final MethodRay INSTANCE = new MethodRay(new ResourceLocation(TooManyGlyphsMod.MODID, "glyph_ray"), "Ray");
 
-    public MethodRay(String tag, String description) {
+    public MethodRay(ResourceLocation tag, String description) {
         super(tag, description);
     }
 
@@ -44,7 +45,7 @@ public class MethodRay extends AbstractCastMethod {
         BONUS_RANGE_PER_AUGMENT = builder.comment("Bonus range per augment").defineInRange("bonus_range_per_augment", 16d, 0d, Double.MAX_VALUE);
     }
 
-    public void fireRay(Level world, LivingEntity shooter, SpellStats stats, SpellContext spellContext, SpellResolver resolver) {
+    public CastResolveType fireRay(Level world, LivingEntity shooter, SpellStats stats, SpellContext spellContext, SpellResolver resolver) {
         int sensitivity = stats.getBuffCount(AugmentSensitive.INSTANCE);
         double range = getRange(stats);
 
@@ -61,36 +62,35 @@ public class MethodRay extends AbstractCastMethod {
         }
         EntityHitResult entityTarget = ProjectileUtil.getEntityHitResult(world, shooter, fromPoint, toPoint, new AABB(fromPoint, toPoint).inflate(1.5d), e -> e != shooter && e.isAlive() && e instanceof LivingEntity);
 
-
-
         if (entityTarget != null)
         {
-            resolver.onResolveEffect(world, shooter, entityTarget);
-            resolver.expendMana(shooter);
+            resolver.expendMana();
+            resolver.onResolveEffect(world, entityTarget);
             Vec3 hitPoint = findNearestPointOnLine(fromPoint, toPoint, entityTarget.getLocation());
             PacketRayEffect.send(world, spellContext, fromPoint, hitPoint);
-            return;
+            return CastResolveType.SUCCESS;
         }
 
         if (blockTarget.getType() == HitResult.Type.BLOCK)
         {
-            resolver.expendMana(shooter);
-            resolver.onResolveEffect(world, shooter, blockTarget);
+            resolver.expendMana();
+            resolver.onResolveEffect(world, blockTarget);
             PacketRayEffect.send(world, spellContext, fromPoint, blockTarget.getLocation());
-            return;
+            return CastResolveType.SUCCESS;
         }
 
         if (blockTarget.getType() == HitResult.Type.MISS && sensitivity >= 2)
         {
             Vec3 approximateNormal = fromPoint.subtract(toPoint).normalize();
             blockTarget = new BlockHitResult(toPoint, Direction.getNearest(approximateNormal.x, approximateNormal.y, approximateNormal.z), new BlockPos(toPoint), true);
-            resolver.expendMana(shooter);
-            resolver.onResolveEffect(world, shooter, blockTarget);
+            resolver.expendMana();
+            resolver.onResolveEffect(world, blockTarget);
             PacketRayEffect.send(world, spellContext, fromPoint, blockTarget.getLocation());
+            return CastResolveType.SUCCESS;
         }
 
-        resolver.expendMana(shooter);
         PacketRayEffect.send(world, spellContext, fromPoint, toPoint);
+        return CastResolveType.FAILURE;
     }
 
     @Nonnull
@@ -104,48 +104,28 @@ public class MethodRay extends AbstractCastMethod {
     }
 
     @Override
-    public void onCast(@Nullable ItemStack itemStack, LivingEntity shooter, Level world, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
-        fireRay(world, shooter, stats, spellContext, spellResolver);
+    public CastResolveType onCast(@Nullable ItemStack itemStack, LivingEntity shooter, Level world, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
+        return fireRay(world, shooter, stats, spellContext, spellResolver);
     }
 
     @Override
-    public void onCastOnBlock(UseOnContext itemUseContext, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
-        fireRay(itemUseContext.getLevel(), itemUseContext.getPlayer(), stats, spellContext, spellResolver);
+    public CastResolveType onCastOnBlock(UseOnContext itemUseContext, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
+        return fireRay(itemUseContext.getLevel(), itemUseContext.getPlayer(), stats, spellContext, spellResolver);
     }
 
     @Override
-    public void onCastOnBlock(BlockHitResult blockRayTraceResult, LivingEntity shooter, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
-        fireRay(shooter.level, shooter, stats, spellContext, spellResolver);
+    public CastResolveType onCastOnBlock(BlockHitResult blockRayTraceResult, LivingEntity shooter, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
+        return fireRay(shooter.level, shooter, stats, spellContext, spellResolver);
     }
 
     @Override
-    public void onCastOnEntity(@Nullable ItemStack itemStack, LivingEntity shooter, Entity target, InteractionHand hand, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
-        fireRay(shooter.level, shooter, stats, spellContext, spellResolver);
-    }
-
-    @Override
-    public boolean wouldCastSuccessfully(@Nullable ItemStack itemStack, LivingEntity shooter, Level world, SpellStats stats, SpellResolver spellResolver) {
-        return true;
-    }
-
-    @Override
-    public boolean wouldCastOnBlockSuccessfully(UseOnContext itemUseContext, SpellStats stats, SpellResolver spellResolver) {
-        return true;
-    }
-
-    @Override
-    public boolean wouldCastOnBlockSuccessfully(BlockHitResult blockRayTraceResult, LivingEntity livingEntity, SpellStats stats, SpellResolver spellResolver) {
-        return true;
-    }
-
-    @Override
-    public boolean wouldCastOnEntitySuccessfully(@Nullable ItemStack itemStack, LivingEntity livingEntity, Entity entity, InteractionHand hand, SpellStats stats, SpellResolver spellResolver) {
-        return true;
+    public CastResolveType onCastOnEntity(@Nullable ItemStack itemStack, LivingEntity shooter, Entity target, InteractionHand hand, SpellStats stats, SpellContext spellContext, SpellResolver spellResolver) {
+        return fireRay(shooter.level, shooter, stats, spellContext, spellResolver);
     }
 
     @Override
     public int getDefaultManaCost() {
-        return 15;
+        return 10;
     }
 
     @Nonnull
@@ -155,9 +135,9 @@ public class MethodRay extends AbstractCastMethod {
     }
 
     @Override
-    protected Map<String, Integer> getDefaultAugmentLimits() {
-        Map<String, Integer> result = super.getDefaultAugmentLimits();
-        result.put(AugmentSensitive.INSTANCE.getId(), 2);
+    protected Map<ResourceLocation, Integer> getDefaultAugmentLimits(Map<ResourceLocation, Integer> result) {
+        result.put(AugmentSensitive.INSTANCE.getRegistryName(), 2);
         return result;
     }
+
 }

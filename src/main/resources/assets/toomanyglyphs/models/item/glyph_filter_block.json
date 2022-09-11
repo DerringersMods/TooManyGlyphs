@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "ars_nouveau:items/filter_entity"
+    "layer0": "toomanyglyphs:items/filter_block"
   }
 }

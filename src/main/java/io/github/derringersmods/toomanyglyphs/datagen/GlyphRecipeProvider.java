@@ -1,16 +1,18 @@
 package io.github.derringersmods.toomanyglyphs.datagen;
 
+import com.hollingsworth.arsnouveau.api.RegistryHelper;
 import com.hollingsworth.arsnouveau.common.crafting.recipes.GlyphRecipe;
 import com.hollingsworth.arsnouveau.setup.BlockRegistry;
 import com.hollingsworth.arsnouveau.setup.ItemsRegistry;
 import io.github.derringersmods.toomanyglyphs.common.glyphs.*;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 
 import java.io.IOException;
@@ -21,8 +23,15 @@ public class GlyphRecipeProvider extends com.hollingsworth.arsnouveau.common.dat
         super(generator);
     }
 
+    // work around Bailey not fixing everything for namespaces yet :P
+    protected static Path getScribeGlyphPath(Path pathIn, Item glyph)
+    {
+        ResourceLocation registryName = RegistryHelper.getRegistryName(glyph);
+        return pathIn.resolve("data/" + registryName.getNamespace() + "/recipes/" + registryName.getPath() + ".json");
+    }
+
     @Override
-    public void run(HashCache cache) throws IOException {
+    public void run(CachedOutput cache) throws IOException {
         recipes.add(get(MethodLayOnHands.INSTANCE).withIngredient(Ingredient.of(ItemTags.WOODEN_PRESSURE_PLATES)).withIngredient(Ingredient.of(ItemTags.BUTTONS)));
         recipes.add(get(MethodRay.INSTANCE).withItem(Items.TARGET).withItem(ItemsRegistry.SOURCE_GEM, 1));
 
@@ -48,6 +57,6 @@ public class GlyphRecipeProvider extends com.hollingsworth.arsnouveau.common.dat
 
         Path outputBase = generator.getOutputFolder();
         for (GlyphRecipe recipe : recipes)
-            DataProvider.save(GSON, cache, recipe.asRecipe(), getScribeGlyphPath(outputBase, recipe.output.getItem()));
+            DataProvider.saveStable(cache, recipe.asRecipe(), getScribeGlyphPath(outputBase, recipe.output.getItem()));
     }
 }

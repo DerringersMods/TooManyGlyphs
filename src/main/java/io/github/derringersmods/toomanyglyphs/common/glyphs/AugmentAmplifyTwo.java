@@ -5,12 +5,14 @@ import com.hollingsworth.arsnouveau.api.spell.AbstractSpellPart;
 import com.hollingsworth.arsnouveau.api.spell.SpellStats;
 import com.hollingsworth.arsnouveau.api.spell.SpellTier;
 import com.hollingsworth.arsnouveau.common.spell.augment.AugmentAmplify;
+import io.github.derringersmods.toomanyglyphs.init.TooManyGlyphsMod;
+import net.minecraft.resources.ResourceLocation;
 
 public class AugmentAmplifyTwo extends AbstractAugment {
 
-    public static final AugmentAmplifyTwo INSTANCE = new AugmentAmplifyTwo("amplify_two", "Amplify II");
+    public static final AugmentAmplifyTwo INSTANCE = new AugmentAmplifyTwo(new ResourceLocation(TooManyGlyphsMod.MODID, "glyph_amplify_two"), "Amplify II");
 
-    public AugmentAmplifyTwo(String tag, String description) {
+    public AugmentAmplifyTwo(ResourceLocation tag, String description) {
         super(tag, description);
     }
 
