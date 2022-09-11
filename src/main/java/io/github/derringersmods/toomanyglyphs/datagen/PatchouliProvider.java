@@ -1,6 +1,12 @@
 package io.github.derringersmods.toomanyglyphs.datagen;
 
+import com.hollingsworth.arsnouveau.ArsNouveau;
+import com.hollingsworth.arsnouveau.api.spell.AbstractCastMethod;
+import com.hollingsworth.arsnouveau.api.spell.AbstractEffect;
 import com.hollingsworth.arsnouveau.api.spell.AbstractSpellPart;
+import com.hollingsworth.arsnouveau.common.datagen.patchouli.GlyphScribePage;
+import com.hollingsworth.arsnouveau.common.datagen.patchouli.PatchouliBuilder;
+import com.hollingsworth.arsnouveau.common.datagen.patchouli.TextPage;
 import io.github.derringersmods.toomanyglyphs.init.ArsNouveauRegistry;
 import io.github.derringersmods.toomanyglyphs.init.TooManyGlyphsMod;
 import net.minecraft.data.CachedOutput;
@@ -20,6 +26,18 @@ public class PatchouliProvider extends com.hollingsworth.arsnouveau.common.datag
     @Override
     public Path getPath(ResourceLocation category, String fileName) {
         return this.generator.getOutputFolder().resolve("data/" + TooManyGlyphsMod.MODID + "/patchouli_books/worn_notebook/en_us/entries/" + category.getPath() + "/" + fileName + ".json");
+    }
+
+    @Override
+    public void addGlyphPage(AbstractSpellPart spellPart) {
+        ResourceLocation category = new ResourceLocation(ArsNouveau.MODID, "glyphs_" + spellPart.getTier().value);
+        PatchouliBuilder builder = new PatchouliBuilder(category, spellPart.getName())
+                .withName(spellPart.getRegistryName().getNamespace() + ".glyph_name." + spellPart.getRegistryName().getPath())
+                .withIcon(spellPart.getRegistryName().toString())
+                .withSortNum(spellPart instanceof AbstractCastMethod ? 1 : spellPart instanceof AbstractEffect ? 2 : 3)
+                .withPage(new TextPage(spellPart.getRegistryName().getNamespace() + ".glyph_desc." + spellPart.getRegistryName().getPath()))
+                .withPage(new GlyphScribePage(spellPart));
+        this.pages.add(new PatchouliPage(builder, getPath(category, spellPart.getRegistryName().getPath())));
     }
 
     @Override

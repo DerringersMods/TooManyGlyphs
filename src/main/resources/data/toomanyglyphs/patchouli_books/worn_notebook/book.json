@@ -1,3 +1,6 @@
 {
+  "name": "Some loose Worn Notebook pages",
+  "landing_text": "Includes notes on additional glyphs, quite possibly too many.",
+  "version": 1,
   "extend": "ars_nouveau:worn_notebook"
 }
