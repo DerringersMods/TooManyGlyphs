@@ -8,14 +8,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Set;
 
-public abstract class AbstractEffectFilter extends AbstractEffect implements ITargetFilter {
+public abstract class AbstractEffectFilter extends AbstractEffect implements ITargetFilter, IFilter {
     public AbstractEffectFilter(String tag, String description) {
         super(new ResourceLocation(TooManyGlyphsMod.MODID, "glyph_" + tag) , description);
     }
@@ -64,5 +63,15 @@ public abstract class AbstractEffectFilter extends AbstractEffect implements ITa
     @Override
     public boolean matches(EntityHitResult target) {
         return false;
+    }
+
+    @Override
+    public boolean shouldResolveOnBlock(BlockHitResult target) {
+        return matches(target);
+    }
+
+    @Override
+    public boolean shouldResolveOnEntity(EntityHitResult target) {
+        return matches(target);
     }
 }
