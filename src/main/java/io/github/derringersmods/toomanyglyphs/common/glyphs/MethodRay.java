@@ -32,7 +32,7 @@ public class MethodRay extends AbstractCastMethod {
     }
 
     double getRange(SpellStats stats) {
-        return BASE_RANGE.get() + BONUS_RANGE_PER_AUGMENT.get() * stats.getBuffCount(AugmentAOE.INSTANCE);
+        return BASE_RANGE.get() + BONUS_RANGE_PER_AUGMENT.get() * stats.getAoeMultiplier();
     }
 
     public ForgeConfigSpec.DoubleValue BASE_RANGE;
@@ -64,7 +64,7 @@ public class MethodRay extends AbstractCastMethod {
 
         if (entityTarget != null)
         {
-            resolver.expendMana();
+            //resolver.expendMana();
             resolver.onResolveEffect(world, entityTarget);
             Vec3 hitPoint = findNearestPointOnLine(fromPoint, toPoint, entityTarget.getLocation());
             PacketRayEffect.send(world, spellContext, fromPoint, hitPoint);
@@ -73,7 +73,7 @@ public class MethodRay extends AbstractCastMethod {
 
         if (blockTarget.getType() == HitResult.Type.BLOCK)
         {
-            resolver.expendMana();
+            //resolver.expendMana();
             resolver.onResolveEffect(world, blockTarget);
             PacketRayEffect.send(world, spellContext, fromPoint, blockTarget.getLocation());
             return CastResolveType.SUCCESS;
@@ -83,7 +83,7 @@ public class MethodRay extends AbstractCastMethod {
         {
             Vec3 approximateNormal = fromPoint.subtract(toPoint).normalize();
             blockTarget = new BlockHitResult(toPoint, Direction.getNearest(approximateNormal.x, approximateNormal.y, approximateNormal.z), new BlockPos(toPoint), true);
-            resolver.expendMana();
+            //resolver.expendMana();
             resolver.onResolveEffect(world, blockTarget);
             PacketRayEffect.send(world, spellContext, fromPoint, blockTarget.getLocation());
             return CastResolveType.SUCCESS;
