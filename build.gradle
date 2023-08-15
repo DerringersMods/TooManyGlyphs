@@ -150,7 +150,7 @@ dependencies {
 
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 
-    implementation fg.deobf("com.hollingsworth.ars_nouveau:ars_nouveau-1.19.1:${ars_version}")
+    implementation fg.deobf("com.hollingsworth.ars_nouveau:ars_nouveau-${mc_revision}:${ars_version}")
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${mc_version}:${gecko_version}")
 
     //runtimeOnly fg.deobf("curse.maven:exp-407174:3544525") // shutup experimental settings
